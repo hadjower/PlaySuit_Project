@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PlaySuit Beta</string>
+    <string name="viewActionContextBar">View Mode</string>
+    <string name="rescanLibraryActionContextBar">View Mode</string>
+    <string name="menu_albums">Albums</string>
+    <string name="menu_artist">Artist</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+</resources>
