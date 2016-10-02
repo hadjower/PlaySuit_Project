@@ -2,8 +2,13 @@
     <string name="app_name">PlaySuit Beta</string>
     <string name="viewActionContextBar">View Mode</string>
     <string name="rescanLibraryActionContextBar">View Mode</string>
-    <string name="menu_albums">Albums</string>
-    <string name="menu_artist">Artist</string>
+
+    <string name="navigation_menu_and_tab_item_albums">Albums</string>
+    <string name="navigation_menu_and_tab_item_artist">Artist</string>
+    <string name="navigation_menu_and_tab_item_folders">Folders</string>
+    <string name="navigation_menu_and_tab_item_playlists">Playlists</string>
+    <string name="navigation_menu_and_tab_item_songs">Songs</string>
+
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
 </resources>
