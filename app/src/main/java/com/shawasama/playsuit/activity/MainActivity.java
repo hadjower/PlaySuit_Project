@@ -57,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.artistItem:
                         showArtistTab();
                         break;
+                    case R.id.foldersItem:
+                        showFoldersTab();
+                        break;
+                    case R.id.playlistsItem:
+                        showPlaylistsTab();
+                        break;
+                    case R.id.songsItem:
+                        showSongsTab();
+                        break;
                 }
                 return true;
             }
@@ -78,5 +87,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void showArtistTab() {
         viewPager.setCurrentItem(Constants.TAB_ARTIST);
+    }
+
+    private void showFoldersTab() {
+        viewPager.setCurrentItem(Constants.TAB_FOLDERS);
+    }
+
+    private void showPlaylistsTab() {
+        viewPager.setCurrentItem(Constants.TAB_PLAYLISTS);
+    }
+
+    private void showSongsTab() {
+        viewPager.setCurrentItem(Constants.TAB_SONGS);
     }
 }

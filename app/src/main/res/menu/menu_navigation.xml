@@ -10,7 +10,25 @@
     <item
         android:id="@+id/artistItem"
         android:title="@string/navigation_menu_and_tab_item_artist"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:icon="@mipmap/ic_account"
+        />
+    <item
+        android:id="@+id/foldersItem"
+        android:title="@string/navigation_menu_and_tab_item_folders"
+        android:orderInCategory="3"
+        android:icon="@mipmap/ic_folder_multiple_outline"
+        />
+    <item
+        android:id="@+id/playlistsItem"
+        android:title="@string/navigation_menu_and_tab_item_playlists"
+        android:orderInCategory="4"
+        android:icon="@mipmap/ic_playlist_play"
+        />
+    <item
+        android:id="@+id/songsItem"
+        android:title="@string/navigation_menu_and_tab_item_songs"
+        android:orderInCategory="5"
+        android:icon="@mipmap/ic_library_music"
         />
 </menu>
