@@ -1,8 +1,11 @@
 package com.shawasama.playsuit.adapter;
 
+//import android.app.Fragment;
+//import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+//import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
@@ -25,6 +28,8 @@ public class TabsFragmentAdapter extends FragmentPagerAdapter {
         this.context = context;
         initTabsMap(context);
     }
+
+
 
     @Override
     public CharSequence getPageTitle(int position) {

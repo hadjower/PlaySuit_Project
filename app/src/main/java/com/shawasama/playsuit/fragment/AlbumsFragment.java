@@ -11,7 +11,7 @@ import com.shawasama.playsuit.R;
 
 public class AlbumsFragment extends AbstractTabFragment {
 
-    private static final int LAYOUT = R.layout.fragmetn_example;
+    private static final int LAYOUT = R.layout.fragment_example;
 
     public static AlbumsFragment getInstance(Context context) {
         Bundle args = new Bundle();

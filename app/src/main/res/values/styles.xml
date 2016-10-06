@@ -8,6 +8,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorControlNormal">@color/mainBackground</item>
+        <!--<item name="colorText">@color/white</item>-->
         <!--<item name="colorAccent">@color/colorAccent</item>-->
     </style>
 
