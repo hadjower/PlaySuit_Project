@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         initToolbar();
         initNavigationView();
         initTabs();
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initToolbar() {
@@ -41,11 +43,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.inflateMenu(R.menu.toolbar_menu);
+
     }
 
     private void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+//        navigationView.setScrollbarFadingEnabled(false);
+//        navigationView.setSelected(false);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

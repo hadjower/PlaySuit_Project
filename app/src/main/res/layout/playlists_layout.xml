@@ -29,7 +29,7 @@
                 app:tabIndicatorColor="@android:color/white"
                 app:tabIndicatorHeight="4dp"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@android:color/darker_gray"
+                app:tabTextColor="@android:color/white"
                 />
 
         </android.support.design.widget.AppBarLayout>
@@ -51,8 +51,6 @@
         app:menu="@menu/menu_navigation"
         app:headerLayout="@layout/navigation_header"
         android:background="@color/mainBackground"
-        app:itemTextColor="@android:color/darker_gray"
-        app:itemIconTint="@android:color/darker_gray"
         app:theme="@style/ThemeOverlay.AppCompat.Dark"
         />
 
