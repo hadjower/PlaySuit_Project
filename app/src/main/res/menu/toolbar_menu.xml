@@ -7,5 +7,5 @@
         android:orderInCategory="1"
         android:title="@string/action_search"
         android:icon="@mipmap/ic_magnify"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>
