@@ -30,8 +30,6 @@ public class TabsFragmentAdapter extends FragmentPagerAdapter {
         initTabsMap(context);
     }
 
-
-
     @Override
     public CharSequence getPageTitle(int position) {
         return tabs.get(position).getTitle();

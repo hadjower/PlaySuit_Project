@@ -8,7 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
@@ -57,19 +60,19 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers();
                 switch (item.getItemId()) {
                     case R.id.albumsItem:
-                        showAlbumsTab();
+                        showTab(Constants.TAB_ALBUMS);
                         break;
                     case R.id.artistItem:
-                        showArtistTab();
+                        showTab(Constants.TAB_ARTIST);
                         break;
                     case R.id.foldersItem:
-                        showFoldersTab();
+                        showTab(Constants.TAB_FOLDERS);
                         break;
                     case R.id.playlistsItem:
-                        showPlaylistsTab();
+                        showTab(Constants.TAB_PLAYLISTS);
                         break;
                     case R.id.songsItem:
-                        showSongsTab();
+                        showTab(Constants.TAB_SONGS);
                         break;
                 }
                 return true;
@@ -86,23 +89,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
-    private void showAlbumsTab() {
-        viewPager.setCurrentItem(Constants.TAB_ALBUMS);
-    }
-
-    private void showArtistTab() {
-        viewPager.setCurrentItem(Constants.TAB_ARTIST);
-    }
-
-    private void showFoldersTab() {
-        viewPager.setCurrentItem(Constants.TAB_FOLDERS);
-    }
-
-    private void showPlaylistsTab() {
-        viewPager.setCurrentItem(Constants.TAB_PLAYLISTS);
-    }
-
-    private void showSongsTab() {
-        viewPager.setCurrentItem(Constants.TAB_SONGS);
+    private void showTab(int tab_number){
+        viewPager.setCurrentItem(tab_number);
     }
 }
