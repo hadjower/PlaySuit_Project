@@ -2,12 +2,15 @@ package com.shawasama.playsuit.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,14 +47,24 @@ public class SongAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, final View convertView, ViewGroup parent) {
         //map to song layout
-        LinearLayout songLay = (LinearLayout) songInf.inflate(R.layout.item_songlist, parent, false);
+        final LinearLayout songLay = (LinearLayout) songInf.inflate(R.layout.item_songlist, parent, false);
 
         //get info
         TextView artist = (TextView) songLay.findViewById(R.id.artist);
         TextView title = (TextView) songLay.findViewById(R.id.title);
         TextView duration = (TextView) songLay.findViewById(R.id.duration);
+        final ImageButton menu = (ImageButton) songLay.findViewById(R.id.menu);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(songLay.getContext(), menu);
+                popupMenu.inflate(R.menu.songlist_item_menu);
+                popupMenu.show();
+            }
+        });
 
         //get current song
         Song currentSong = songList.get(position);

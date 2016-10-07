@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,20 +30,17 @@ import java.util.Comparator;
 public class SongsFragment extends AbstractTabFragment {
 
     private static final int LAYOUT = R.layout.songlist_layout;
-    private static SongsFragment fragment;
 
     private ArrayList<Song> songList;
     private ListView songView;
 
     public static SongsFragment getInstance(Context context) {
-
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            fragment = new SongsFragment();
-            fragment.setArguments(args);
-            fragment.setContext(context);
-            fragment.setTitle(context.getString(R.string.navigation_menu_and_tab_item_songs));
-        }
+        SongsFragment fragment;
+        Bundle args = new Bundle();
+        fragment = new SongsFragment();
+        fragment.setArguments(args);
+        fragment.setContext(context);
+        fragment.setTitle(context.getString(R.string.navigation_menu_and_tab_item_songs));
         return fragment;
     }
 
@@ -84,7 +83,7 @@ public class SongsFragment extends AbstractTabFragment {
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
 
-        if (musicCursor != null && musicCursor.moveToFirst()){
+        if (musicCursor != null && musicCursor.moveToFirst()) {
             //get columns
             int titleColumn = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.TITLE);
