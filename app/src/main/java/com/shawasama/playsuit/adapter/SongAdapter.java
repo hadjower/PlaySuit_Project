@@ -1,7 +1,10 @@
 package com.shawasama.playsuit.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -44,15 +47,19 @@ public class SongAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         //map to song layout
         LinearLayout songLay = (LinearLayout) songInf.inflate(R.layout.item_songlist, parent, false);
+
         //get info
         TextView artist = (TextView) songLay.findViewById(R.id.artist);
         TextView title = (TextView) songLay.findViewById(R.id.title);
         TextView duration = (TextView) songLay.findViewById(R.id.duration);
+
         //get current song
         Song currentSong = songList.get(position);
+
         artist.setText(currentSong.getArtist());
         title.setText(currentSong.getTitle());
         duration.setText(Util.getSongDuration(currentSong.getDuration()));
+
         //set tag
         songLay.setTag(position);
         return songLay;

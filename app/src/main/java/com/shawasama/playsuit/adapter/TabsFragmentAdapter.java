@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 //import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.SparseArray;
 
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
 import com.shawasama.playsuit.fragment.AlbumsFragment;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public class TabsFragmentAdapter extends FragmentPagerAdapter {
 
-    private Map<Integer, AbstractTabFragment> tabs;
+    private SparseArray<AbstractTabFragment> tabs;
     private Context context;
 
     public TabsFragmentAdapter(Context context, FragmentManager fm) {
@@ -47,7 +48,7 @@ public class TabsFragmentAdapter extends FragmentPagerAdapter {
     }
 
     private void initTabsMap(Context context) {
-        tabs = new HashMap<>();
+        tabs = new SparseArray<>();
         tabs.put(0, AlbumsFragment.getInstance(context));
         tabs.put(1, ArtistFragment.getInstance(context));
         tabs.put(2, FoldersFragment.getInstance(context));

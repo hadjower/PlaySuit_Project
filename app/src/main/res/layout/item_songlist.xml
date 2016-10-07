@@ -8,12 +8,11 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
         <TextView
-            android:text="Full Circle"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +24,6 @@
             android:textSize="16sp" />
 
         <TextView
-            android:text="Otherwise"
             android:textColor="@android:color/darker_gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +37,6 @@
     </LinearLayout>
 
     <TextView
-        android:text="00:00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
