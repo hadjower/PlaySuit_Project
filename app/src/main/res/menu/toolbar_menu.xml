@@ -7,14 +7,9 @@
         android:orderInCategory="1"
         android:title="@string/action_search"
         android:icon="@mipmap/ic_magnify"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
-        android:id="@+id/navigation_menu"
-        android:orderInCategory="1"
-        android:title="@string/navigation_menu"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/settings"
+        android:id="@+id/setting"
         android:orderInCategory="1"
         android:title="@string/action_settings"
         app:showAsAction="never" />

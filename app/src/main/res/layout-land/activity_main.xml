@@ -30,7 +30,7 @@
                 app:tabIndicatorHeight="4dp"
                 app:tabSelectedTextColor="@android:color/white"
                 app:tabTextColor="@android:color/darker_gray"
-                app:tabMode="scrollable"
+                app:tabMode="fixed"
                 />
 
         </android.support.design.widget.AppBarLayout>
@@ -43,7 +43,7 @@
             />
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/track_manager"
+            android:id="@+id/some"
             android:layout_width="match_parent"
             android:layout_gravity="bottom"
             android:layout_height="62dp">

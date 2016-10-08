@@ -22,12 +22,12 @@
         <item
             android:id="@+id/playlistsItem"
             android:icon="@mipmap/ic_playlist_play"
-            android:orderInCategory="4"
+            android:orderInCategory="5"
             android:title="@string/navigation_menu_and_tab_item_playlists" />
         <item
             android:id="@+id/songsItem"
             android:icon="@mipmap/ic_library_music"
-            android:orderInCategory="5"
+            android:orderInCategory="6"
             android:title="@string/navigation_menu_and_tab_item_songs" />
     </group>
 
@@ -37,12 +37,12 @@
         <item
             android:id="@+id/play_queueItem"
             android:icon="@mipmap/ic_queue_24dp"
-            android:orderInCategory="6"
+            android:orderInCategory="7"
             android:title="@string/navigation_menu_and_tab_item_play_queue" />
         <item
             android:id="@+id/vk_suitsItem"
             android:icon="@mipmap/ic_queue_24dp"
-            android:orderInCategory="6"
+            android:orderInCategory="8"
             android:title="@string/navigation_menu_and_tab_item_vk_suits" />
     </group>
 
@@ -52,7 +52,7 @@
         <item
             android:id="@+id/setting"
             android:icon="@mipmap/ic_settings"
-            android:orderInCategory="7"
+            android:orderInCategory="9"
             android:title="@string/navigation_menu_and_tab_item_setting" />
     </group>
 </menu>
