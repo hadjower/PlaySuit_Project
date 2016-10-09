@@ -6,4 +6,7 @@ public class Constants {
     public static final int TAB_FOLDERS = 2;
     public static final int TAB_PLAYLISTS = 3;
     public static final int TAB_SONGS = 4;
+
+    public static final int AUDIO = 1;
+    public static final int FOLDER = 0;
 }

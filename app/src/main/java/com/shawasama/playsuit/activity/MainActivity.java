@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton playPauseButton;
     private boolean isPlay = false;
 
-    private ImageButton menuButton;
+//    private ImageButton menuButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.progressBar);
         progressBar.setProgress(40);
 
-        menuButton = (ImageButton) findViewById(R.id.menu);
+//        menuButton = (ImageButton) findViewById(R.id.menu);
     }
 
     private void initButtons() {
@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isPlay){
+                if (isPlay) {
                     playPauseButton.setImageDrawable(
                             ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_play_arrow_white_36dp));
-                }else{
+                } else {
                     playPauseButton.setImageDrawable(
                             ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_pause_white_36dp));
                 }
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                setSelectedItemOnNavigationDrawer(position);
+//                setSelectedItemOnNavigationDrawer(position);
             }
 
             @Override

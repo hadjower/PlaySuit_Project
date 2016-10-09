@@ -38,12 +38,12 @@
             android:id="@+id/play_queueItem"
             android:icon="@mipmap/ic_queue_24dp"
             android:orderInCategory="7"
-            android:title="@string/navigation_menu_and_tab_item_play_queue" />
+            android:title="@string/navigation_menu_play_queue" />
         <item
             android:id="@+id/vk_suitsItem"
             android:icon="@mipmap/ic_queue_24dp"
             android:orderInCategory="8"
-            android:title="@string/navigation_menu_and_tab_item_vk_suits" />
+            android:title="@string/navigation_menu_vk_suits" />
     </group>
 
     <group
@@ -53,6 +53,6 @@
             android:id="@+id/setting"
             android:icon="@mipmap/ic_settings"
             android:orderInCategory="9"
-            android:title="@string/navigation_menu_and_tab_item_setting" />
+            android:title="@string/navigation_menu_setting" />
     </group>
 </menu>

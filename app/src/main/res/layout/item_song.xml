@@ -1,57 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
-            android:textColor="@android:color/white"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/title"
-            android:paddingLeft="8dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
             android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:text=".."
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
         <TextView
-            android:textColor="@android:color/darker_gray"
+            android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/artist"
-            android:paddingLeft="8dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
             android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:textColor="@android:color/darker_gray"
             android:textSize="16sp" />
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:textColor="@android:color/darker_gray"
-        android:id="@+id/duration"
         android:textSize="16sp" />
 
     <ImageButton
+        android:id="@+id/item_btn_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_dots_vertical"
-        android:background="@android:color/transparent"
-        android:id="@+id/menu"
-        android:layout_marginTop="9dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="9dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@mipmap/ic_dots_vertical" />
 
 </LinearLayout>
