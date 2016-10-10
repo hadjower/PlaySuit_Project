@@ -1,12 +1,7 @@
 package com.shawasama.playsuit.fragment;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.adapter.SongAdapter;
+import com.shawasama.playsuit.pojo.AudioContainer;
 import com.shawasama.playsuit.pojo.Song;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SongsFragment extends AbstractTabFragment {
@@ -74,10 +66,10 @@ public class SongsFragment extends AbstractTabFragment {
         this.context = context;
     }
 
-
-
     private void connectSongList() {
-        songList = MainActivity.getSongList();
+        do {
+            songList = AudioContainer.getInstance().getSongList();
+        } while (songList == null);
         SongAdapter songAdapter = new SongAdapter(getActivity(), songList);
         songView.setAdapter(songAdapter);
     }

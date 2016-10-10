@@ -30,4 +30,7 @@
 
     <!--strings for code-->
     <string name="songs">songs</string>
+
+    <!--Log tags-->
+    <string name="path_song_info">PathSongsInfo</string>
 </resources>

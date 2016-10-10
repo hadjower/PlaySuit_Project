@@ -3,28 +3,24 @@ package com.shawasama.playsuit.fragment;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.adapter.FolderAdapter;
+import com.shawasama.playsuit.pojo.AudioContainer;
 import com.shawasama.playsuit.pojo.Util;
 
 import java.io.File;
@@ -35,7 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
 public class FoldersFragment extends AbstractTabFragment {
 
@@ -76,12 +71,11 @@ public class FoldersFragment extends AbstractTabFragment {
         mFolderStateMap = new HashMap<>();
 
         listExplorer = (ListView) view.findViewById(R.id.listview);
-        //TODO check this methods
         listExplorer.setFastScrollEnabled(true);
-//        listExplorer.setVisibility(View.INVISIBLE);
 
 //        rootDir = Environment.getExternalStorageDirectory().getPath();
-        rootDir = "/storage/";
+        rootDir = AudioContainer.getInstance().getRootDir();
+
         if (currentDir == null) {
             currentDir = rootDir;
         }
@@ -147,18 +141,23 @@ public class FoldersFragment extends AbstractTabFragment {
      *                     null if the ListView's position should not be restored.
      */
     private void getDir(String dirPath, Parcelable restoreState) {
-        //TODO load only directories with music inside it or its subdirectories
         fileFolderNameList = new ArrayList<>();
         fileFolderPathList = new ArrayList<>();
         fileFolderTypeList = new ArrayList<>();
 
         File f = new File(dirPath);
+        List<File> files = Arrays.asList(f.listFiles());
+        List<File> foldersAndMusic = new ArrayList<>();
+        File emptyFile;
 
-        List<File> files = new ArrayList<>();
-        File emptyFile = new File("..");
-        files.add(emptyFile);
-        files.addAll(Arrays.asList(f.listFiles()));
-
+        if (!currentDir.equals(rootDir)) {
+            //add empty file so we could go back by clicking its view
+            emptyFile = new File("..");
+            foldersAndMusic.add(emptyFile);
+            fileFolderTypeList.add(0);
+            fileFolderNameList.add("..");
+            fileFolderPathList.add("..");
+        }
 
         if (!files.isEmpty()) {
             //Sort the files by name.
@@ -178,31 +177,18 @@ public class FoldersFragment extends AbstractTabFragment {
                 }
             });
 
-
             for (File file : files) {
-
-                if (file == emptyFile) {
-                    continue;
-                }
-
-                if (!file.isHidden() && file.canRead()) {
+                if (file != null && !file.isHidden() && file.canRead()) {
 
                     if (file.isDirectory()) {
-                        /*
-                         * Starting with Android 4.2, /storage/emulated/legacy/...
-						 * is a symlink that points to the actual directory where
-						 * the user's files are stored. We need to detect the
-						 * actual directory's file path here.
-						 */
-                        String filePath;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                            filePath = getRealFilePath(file.getAbsolutePath());
-                        else
-                            filePath = file.getAbsolutePath();
 
-                        fileFolderPathList.add(filePath);
-                        fileFolderNameList.add(file.getName());
-                        fileFolderTypeList.add(Constants.FOLDER);
+                        String filePath = file.getAbsolutePath();
+                        if (AudioContainer.getInstance().isStoresMusic(filePath)) {
+                            fileFolderPathList.add(file.getAbsolutePath());
+                            fileFolderNameList.add(file.getName());
+                            fileFolderTypeList.add(Constants.FOLDER);
+                            foldersAndMusic.add(file);
+                        }
 
                     } else if (Util.isAudio(file)) {
 
@@ -213,7 +199,7 @@ public class FoldersFragment extends AbstractTabFragment {
                             fileFolderPathList.add(path);
                         } catch (IOException ignored) {
                         }
-
+                        foldersAndMusic.add(file);
                     }
 
                 }
@@ -227,7 +213,7 @@ public class FoldersFragment extends AbstractTabFragment {
                 fileFolderNameList,
                 fileFolderPathList,
                 fileFolderTypeList,
-                files);
+                foldersAndMusic);
 
         listExplorer.setAdapter(folderAdapter);
         folderAdapter.notifyDataSetChanged();
@@ -238,11 +224,14 @@ public class FoldersFragment extends AbstractTabFragment {
             listExplorer.onRestoreInstanceState(mFolderStateMap.get(dirPath));
         }
 
-        listExplorer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        initOnItemClickListener();
+    }
 
+    private void initOnItemClickListener() {
+        listExplorer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int index, long arg3) {
-                if (index == 0) {
+                if (index == 0 && !currentDir.equals(rootDir)) {
                     currentDir = currentDir.substring(0, currentDir.lastIndexOf('/'));
                     getDir(currentDir, mFolderStateMap.get(currentDir));
                     return;
@@ -255,26 +244,16 @@ public class FoldersFragment extends AbstractTabFragment {
                 mFolderStateMap.put(currentDir, listExplorer.onSaveInstanceState());
 
                 String newPath = fileFolderPathList.get(index);
-//                if ((Integer) view.getTag(R.string.folder_list_item_type)==FOLDER)
-//                    currentDir = newPath;
 
                 //Check if the selected item is a folder or a file.
                 if (fileFolderTypeList.get(index) == Constants.FOLDER) {
                     currentDir = newPath;
                     getDir(newPath, null);
                 } else {
-                    int fileIndex = 0;
-                    for (int i = 0; i < index; i++) {
-                        if (fileFolderTypeList.get(i) == Constants.AUDIO)
-                            fileIndex++;
-                    }
-
                     //TODO play
 //                    play(fileFolderTypeList.get(index), fileIndex, currentDir);
                 }
-
             }
-
         });
     }
 

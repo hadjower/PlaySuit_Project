@@ -60,13 +60,12 @@ public class FolderAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View itemLay;
 
-        if (position == 0) {
+        if (position == 0 && items.get(0).getPath().equals("..")) {
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_folder, parent, false);
             ImageButton options = (ImageButton) itemLay.findViewById(R.id.item_btn_menu);
             options.setVisibility(View.INVISIBLE);
             return itemLay;
         }
-
 
         boolean isFolder = mFileFolderTypeList.get(position) == Constants.FOLDER;
 
@@ -74,7 +73,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
         String title, subtitle;
         title = subtitle = "";
         long duration = 0;
-        //TODO load only directories with music inside it or its subdirectories
+        //TODO rewrite algorithm for uploading media content
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri uri = !isFolder ? MediaStore.Audio.Media.EXTERNAL_CONTENT_URI : MediaStore.Audio.Media.getContentUriForPath(mFileFolderPathsList.get(position));
         Cursor musicCursor = null;
@@ -92,8 +91,6 @@ public class FolderAdapter extends ArrayAdapter<String> {
         } catch (IOException e) {
             Log.e("SONG_PATH", "Error while trying to get path of " + mFileFolderNameList.get(position));
         }
-//        Uri uri = Uri.fromFile(new File(mFileFolderPathsList.get(position)));
-//        Cursor musicCursor = musicResolver.query(uri, null, null, null, null);
 
         holder = new ItemViewHolder();
         if (isFolder) {
@@ -153,7 +150,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
         holder.itemSubtitle.setText(subtitle);
         holder.itemRightSubtitle.setText(Util.getSongDuration(duration));
 
-        //TODO maybe create popup clas and use it for options button in all lists/grids
+        //TODO maybe create popup class and use it for options button in all lists/grids
 //            holder.itemMenuBtn.setFocusable(true);
 //            holder.itemMenuBtn.setFocusableInTouchMode(true);
 //            holder.itemMenuBtn.setOnClickListener(new View.OnClickListener() {
