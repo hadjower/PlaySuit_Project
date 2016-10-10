@@ -42,16 +42,18 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/track_manager"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_height="62dp">
-            <include
-                layout="@layout/song_status"
-                android:gravity="bottom"
-                />
-        </android.support.design.widget.AppBarLayout>
+
+        <include layout="@layout/song_status"/>
+        <!--<android.support.design.widget.AppBarLayout-->
+            <!--android:id="@+id/track_manager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_height="62dp">-->
+            <!--<include-->
+                <!--layout="@layout/song_status"-->
+                <!--android:gravity="bottom"-->
+                <!--/>-->
+        <!--</android.support.design.widget.AppBarLayout>-->
 
     </android.support.design.widget.CoordinatorLayout>
 
