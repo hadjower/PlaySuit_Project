@@ -6,12 +6,25 @@ public class Song {
     private String artist;
     private String title;
     private long duration;
+    private String path;
+    private String fileName;
+    private long albumID;
 
-    public Song(long id, String artist, String title, long duration) {
+    public Song(
+            long id,
+            String artist,
+            String title,
+            long duration,
+            String path,
+            String fileName,
+            long albumID) {
         this.id = id;
         this.artist = artist;
         this.title = title;
         this.duration = duration;
+        this.path = path;
+        this.fileName = fileName;
+        this.albumID = albumID;
     }
 
     public long getId() {
@@ -26,10 +39,6 @@ public class Song {
         return artist;
     }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -42,7 +51,15 @@ public class Song {
         return duration;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public String getPath() {
+        return path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public long getAlbumID() {
+        return albumID;
     }
 }

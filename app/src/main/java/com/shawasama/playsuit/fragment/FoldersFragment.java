@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,7 @@ public class FoldersFragment extends AbstractTabFragment {
 
     //Folder parameter
     private String rootDir;
-    private String currentDir;
-    private Stack<String> parentDirs;
+    private static String currentDir;
     private ArrayList<String> fileFolderNameList;
     private ArrayList<String> fileFolderPathList;
     private ArrayList<Integer> fileFolderTypeList;
@@ -63,6 +63,10 @@ public class FoldersFragment extends AbstractTabFragment {
         return fragment;
     }
 
+    public static String getCurrentDir() {
+        return currentDir;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,18 +77,20 @@ public class FoldersFragment extends AbstractTabFragment {
 
         listExplorer = (ListView) view.findViewById(R.id.listview);
         //TODO check this methods
-//        listExplorer.setFastScrollEnabled(true);
+        listExplorer.setFastScrollEnabled(true);
 //        listExplorer.setVisibility(View.INVISIBLE);
 
 //        rootDir = Environment.getExternalStorageDirectory().getPath();
         rootDir = "/storage/";
-        currentDir = rootDir;
+        if (currentDir == null) {
+            currentDir = rootDir;
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 //                slideUpListExplorer();
-                getDir(rootDir, null);
+                getDir(currentDir, null);
             }
         }, 0);
 
@@ -159,8 +165,6 @@ public class FoldersFragment extends AbstractTabFragment {
             Collections.sort(files, new Comparator<File>() {
                 @Override
                 public int compare(File f1, File f2) {
-//                    if (f1 == null || f2 == null)
-//                        return 0;
                     return f1.getName().compareTo(f2.getName());
                 }
             });
@@ -168,8 +172,6 @@ public class FoldersFragment extends AbstractTabFragment {
             Collections.sort(files, new Comparator<File>() {
                 @Override
                 public int compare(File f1, File f2) {
-//                    if (f1 == null|| f2 == null)
-//                        return 0;
                     int typeF1 = f1.isDirectory() ? Constants.FOLDER : Constants.AUDIO;
                     int typeF2 = f2.isDirectory() ? Constants.FOLDER : Constants.AUDIO;
                     return typeF1 - typeF2;
@@ -218,6 +220,7 @@ public class FoldersFragment extends AbstractTabFragment {
 
             }
         }
+
         FolderAdapter folderAdapter = new FolderAdapter(
                 getActivity(),
                 this,
@@ -258,7 +261,6 @@ public class FoldersFragment extends AbstractTabFragment {
                 //Check if the selected item is a folder or a file.
                 if (fileFolderTypeList.get(index) == Constants.FOLDER) {
                     currentDir = newPath;
-//                    Toast.makeText(context, currentDir, Toast.LENGTH_SHORT).show();
                     getDir(newPath, null);
                 } else {
                     int fileIndex = 0;

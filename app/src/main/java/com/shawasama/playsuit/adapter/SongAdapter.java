@@ -14,15 +14,15 @@ import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.pojo.Song;
 import com.shawasama.playsuit.pojo.Util;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class SongAdapter extends BaseAdapter {
 
-    private ArrayList<Song> songList;
+    private List<Song> songList;
     private LayoutInflater songInf;
 
-    public SongAdapter(Context c, ArrayList<Song> songList) {
+    public SongAdapter(Context c, List<Song> songList) {
         this.songList = songList;
         songInf = LayoutInflater.from(c);
     }

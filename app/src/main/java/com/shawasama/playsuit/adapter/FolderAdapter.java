@@ -23,7 +23,6 @@ import com.shawasama.playsuit.pojo.Util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -47,12 +46,14 @@ public class FolderAdapter extends ArrayAdapter<String> {
 
         mContext = context;
         mApp = (Application) context.getApplicationContext();
+        mFragment = fragment;
 
         this.mFileFolderNameList = nameList;
         this.mFileFolderTypeList = mFileFolderTypeList;
         this.mFileFolderPathsList = fileFolderPathsList;
         this.items = items;
     }
+
 
     @NonNull
     @Override
@@ -99,7 +100,6 @@ public class FolderAdapter extends ArrayAdapter<String> {
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_folder, parent, false);
             holder.folderIcon = (ImageView) itemLay.findViewById(R.id.folder_icon);
 
-//            Log.i("FOLDER", "Is cursor null in " + mFileFolderPathsList.get(position) + ": " + String.valueOf(musicCursor.moveToFirst()));
             //TODO get amount of songs, duration of songs
             if (musicCursor != null && musicCursor.moveToFirst()) {
 

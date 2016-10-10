@@ -2,6 +2,7 @@ package com.shawasama.playsuit.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,18 +15,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.shawasama.playsuit.R;
+import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.adapter.SongAdapter;
 import com.shawasama.playsuit.pojo.Song;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class SongsFragment extends AbstractTabFragment {
 
     private static final int LAYOUT = R.layout.listview_layout;
 
-    private ArrayList<Song> songList;
+    private List<Song> songList;
     private ListView songView;
 
     public static SongsFragment getInstance(Context context) {
@@ -46,7 +49,6 @@ public class SongsFragment extends AbstractTabFragment {
         songView = (ListView) view.findViewById(R.id.listview);
         initListeners();
 
-        setSongList();
         connectSongList();
         return view;
     }
@@ -72,42 +74,10 @@ public class SongsFragment extends AbstractTabFragment {
         this.context = context;
     }
 
-    private void setSongList() {
-        songList = new ArrayList<>();
 
-        ContentResolver musicResolver = getActivity().getContentResolver();
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
-
-        if (musicCursor != null && musicCursor.moveToFirst()) {
-            //get columns
-            int titleColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.TITLE);
-            int artistColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.ARTIST);
-            int idColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media._ID);
-            int durationColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.DURATION);
-
-            //add songs to list
-            do {
-                long thisID = musicCursor.getLong(idColumn);
-                String thisTitle = musicCursor.getString(titleColumn);
-                String thisArtist = musicCursor.getString(artistColumn);
-                long thisDuration = musicCursor.getLong(durationColumn);
-                songList.add(new Song(thisID, thisArtist, thisTitle, thisDuration));
-            } while (musicCursor.moveToNext());
-        }
-    }
 
     private void connectSongList() {
-        Collections.sort(songList, new Comparator<Song>() {
-            @Override
-            public int compare(Song o1, Song o2) {
-                return o1.getTitle().compareTo(o2.getTitle());
-            }
-        });
+        songList = MainActivity.getSongList();
         SongAdapter songAdapter = new SongAdapter(getActivity(), songList);
         songView.setAdapter(songAdapter);
     }
