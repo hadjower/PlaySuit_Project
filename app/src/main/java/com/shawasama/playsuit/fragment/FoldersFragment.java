@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
@@ -60,10 +58,6 @@ public class FoldersFragment extends AbstractTabFragment {
         return fragment;
     }
 
-    public static String getCurrentDir() {
-        return currentDir;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -92,8 +86,7 @@ public class FoldersFragment extends AbstractTabFragment {
             }, 0);
         } else {
             //TODO Write on the background the there is no media
-            Toast.makeText(context, "There is no music", Toast.LENGTH_LONG).show();
-            Log.i("CURR_DIR", " Current dir: " + currentDir);
+//            Toast.makeText(context, "There is no music", Toast.LENGTH_LONG).show();
         }
 
         return view;
@@ -176,6 +169,7 @@ public class FoldersFragment extends AbstractTabFragment {
                 }
             });
 
+            //Sort the files by type(folder or music)
             Collections.sort(files, new Comparator<File>() {
                 @Override
                 public int compare(File f1, File f2) {
@@ -192,7 +186,7 @@ public class FoldersFragment extends AbstractTabFragment {
 
                         String filePath = file.getAbsolutePath();
                         if (AudioContainer.getInstance().isStoresMusic(filePath)) {
-                            fileFolderPathList.add(file.getAbsolutePath());
+                            fileFolderPathList.add(filePath);
                             fileFolderNameList.add(file.getName());
                             fileFolderTypeList.add(Constants.FOLDER);
                             foldersAndMusic.add(file);
@@ -219,7 +213,6 @@ public class FoldersFragment extends AbstractTabFragment {
                 getActivity(),
                 this,
                 fileFolderNameList,
-                fileFolderPathList,
                 fileFolderTypeList,
                 foldersAndMusic);
 
@@ -250,7 +243,6 @@ public class FoldersFragment extends AbstractTabFragment {
                 }
 
                 mFolderStateMap.put(currentDir, listExplorer.onSaveInstanceState());
-
                 String newPath = fileFolderPathList.get(index);
 
                 //Check if the selected item is a folder or a file.

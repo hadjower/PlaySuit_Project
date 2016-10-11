@@ -6,20 +6,26 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.SparseArray;
 
+import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class AudioContainer {
     private static AudioContainer instance;
 
     private List<Song> songList;
-    private List<String> songPaths;
     private PathSongInfoContainer container;
+    private Map<String, Song> pathSongMap;
+
     private String rootDir;
 
 
@@ -37,6 +43,7 @@ public final class AudioContainer {
             return;
         }
         songList = new ArrayList<>();
+        pathSongMap = new HashMap<>();
         container = new PathSongInfoContainer();
 
         ContentResolver musicResolver = context.getContentResolver();
@@ -48,7 +55,8 @@ public final class AudioContainer {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.ALBUM_ID
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.IS_MUSIC
         };
         Cursor musicCursor = musicResolver.query(musicUri, projection, null, null, null);
 
@@ -69,10 +77,13 @@ public final class AudioContainer {
             int albumIDColumn = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.ALBUM_ID);
 
-            songPaths = new ArrayList<>();
-
+            List<String> songDirPaths = new ArrayList<>();
             //add songs to list
             do {
+                if (musicCursor.getInt(musicCursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)) == 0) {
+                    continue;
+                }
+
                 long thisID = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
@@ -80,7 +91,8 @@ public final class AudioContainer {
                 String thisPath = musicCursor.getString(dataColumn);
                 String thisFileName = musicCursor.getString(fileNameColumn);
                 long thisAlbumID = musicCursor.getLong(albumIDColumn);
-                songList.add(new Song(
+
+                Song thisSong = new Song(
                         thisID,
                         thisArtist,
                         thisTitle,
@@ -88,16 +100,19 @@ public final class AudioContainer {
                         thisPath,
                         thisFileName,
                         thisAlbumID
-                ));
+                );
+                songList.add(thisSong);
+                pathSongMap.put(thisPath, thisSong);
 
                 thisPath = thisPath.substring(0, thisPath.lastIndexOf("/"));
+
                 if (rootDir == null) {
                     rootDir = "/";
                     rootDir += thisPath.split("/")[1];
                 }
 
-                if (!songPaths.contains(thisPath)) {
-                    songPaths.add(thisPath);
+                if (!songDirPaths.contains(thisPath)) {
+                    songDirPaths.add(thisPath);
                     container.put(thisPath, thisDuration);
                 } else {
                     PathSongsInfo infoInstance = container.get(thisPath);
@@ -131,11 +146,28 @@ public final class AudioContainer {
     }
 
     public boolean isStoresMusic(String directoryPath) {
-        if (container == null)
+        if (container == null) {
+            Log.e("AudioContainer", " Field container is null, while trying to call method isStoresMusic");
             return false;
-
+        }
         return container.isStoresMusic(directoryPath);
     }
+
+    public SparseArray<Long> getFolderInfo(File directory) {
+        SparseArray<Long> folderInfo = new SparseArray<>(2);
+        long[] amAndDur = container.getFolderInfoByPath(directory.getAbsolutePath());
+        if (amAndDur != null) {
+            folderInfo.put(Constants.AMOUNT_KEY, amAndDur[Constants.AMOUNT_KEY]);
+            folderInfo.put(Constants.DURATION_KEY, amAndDur[Constants.DURATION_KEY]);
+            return folderInfo;
+        }
+        return null;
+    }
+
+    public Song getSong(String path) {
+        return pathSongMap.get(path);
+    }
+
 
     private class PathSongInfoContainer {
         List<PathSongsInfo> infoList;
@@ -159,10 +191,25 @@ public final class AudioContainer {
 
         boolean isStoresMusic(String directoryPath) {
             for (PathSongsInfo info : infoList) {
-                if (info.path.contains(directoryPath))
+                if (info.path.contains(directoryPath)) {
                     return true;
+                }
             }
             return false;
+        }
+
+        long[] getFolderInfoByPath(String path) {
+            long[] amAndDur = new long[2];
+            int amountIndex = Constants.AMOUNT_KEY;
+            int durIndex = Constants.DURATION_KEY;
+            amAndDur[amountIndex] = amAndDur[durIndex] = 0;
+            for (PathSongsInfo info : infoList) {
+                if (info.path.contains(path)) {
+                    amAndDur[amountIndex] += info.amountOfSongs;
+                    amAndDur[durIndex] += info.sumDuration;
+                }
+            }
+            return amAndDur;
         }
     }
 
@@ -183,3 +230,4 @@ public final class AudioContainer {
         }
     }
 }
+

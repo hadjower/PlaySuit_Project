@@ -8,18 +8,24 @@ import java.io.File;
 
 public class Util {
     public static String getSongDuration(long time) {
-        String duration;
+        StringBuilder duration = new StringBuilder("");
         long seconds = time / 1000;
-        long minutes = seconds / 60;
-        seconds %= 60;
+        long minutes = (seconds / 60) % 60;
+        long hours = (minutes / 60) % 60;
 
-        if (seconds < 10) {
-            duration = String.valueOf(minutes) + ":0" + String.valueOf(seconds);
-        } else {
-            duration = String.valueOf(minutes) + ":" + String.valueOf(seconds);
+        if (hours > 0) {
+            duration.append(String.valueOf(hours)).append(":");
+            if (minutes < 10)
+                duration.append("0");
         }
 
-        return duration;
+        if (seconds < 10) {
+            duration.append(String.valueOf(minutes)).append(":0").append(String.valueOf(seconds));
+        } else {
+            duration.append(String.valueOf(minutes)).append(":").append(String.valueOf(seconds));
+        }
+
+        return duration.toString();
     }
 
     public static boolean isAudio(File file) {

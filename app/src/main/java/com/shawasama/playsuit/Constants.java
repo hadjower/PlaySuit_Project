@@ -11,4 +11,7 @@ public class Constants {
     public static final int FOLDER = 0;
 
     public static final int REQUEST_PERMISSION = 25;
+
+    public static final int DURATION_KEY = 0;
+    public static final int AMOUNT_KEY = 1;
 }

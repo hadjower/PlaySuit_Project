@@ -92,7 +92,7 @@ public class SongsFragment extends AbstractTabFragment {
             songList = task.get(1, TimeUnit.SECONDS);
             if (songList == null || songList.size()==0) {
                 //TODO Write on background that there are no music
-                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
             } else {
                 SongAdapter songAdapter = new SongAdapter(getActivity(), songList);
                 songView.setAdapter(songAdapter);

@@ -1,13 +1,12 @@
 package com.shawasama.playsuit.adapter;
 
 import android.app.Application;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,11 @@ import android.widget.TextView;
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.fragment.FoldersFragment;
+import com.shawasama.playsuit.pojo.AudioContainer;
+import com.shawasama.playsuit.pojo.Song;
 import com.shawasama.playsuit.pojo.Util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -35,13 +35,14 @@ public class FolderAdapter extends ArrayAdapter<String> {
     private List<File> items;
     private List<String> mFileFolderNameList;
     private List<Integer> mFileFolderTypeList;
-    private List<String> mFileFolderPathsList;
+
+    private MediaMetadataRetriever retriever;
 
     public FolderAdapter
             (Context context, FoldersFragment fragment,
              List<String> nameList,
-             List<String> fileFolderPathsList,
-             List<Integer> mFileFolderTypeList, List<File> items) {
+             List<Integer> mFileFolderTypeList,
+             List<File> items) {
         super(context, -1, nameList);
 
         mContext = context;
@@ -50,8 +51,9 @@ public class FolderAdapter extends ArrayAdapter<String> {
 
         this.mFileFolderNameList = nameList;
         this.mFileFolderTypeList = mFileFolderTypeList;
-        this.mFileFolderPathsList = fileFolderPathsList;
         this.items = items;
+
+        retriever = new MediaMetadataRetriever();
     }
 
 
@@ -60,6 +62,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View itemLay;
 
+        //if layout for back function
         if (position == 0 && items.get(0).getPath().equals("..")) {
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_folder, parent, false);
             ImageButton options = (ImageButton) itemLay.findViewById(R.id.item_btn_menu);
@@ -71,71 +74,44 @@ public class FolderAdapter extends ArrayAdapter<String> {
 
         ItemViewHolder holder;
         String title, subtitle;
-        title = subtitle = "";
         long duration = 0;
-        //TODO rewrite algorithm for uploading media content
-        ContentResolver musicResolver = mContext.getContentResolver();
-        Uri uri = !isFolder ? MediaStore.Audio.Media.EXTERNAL_CONTENT_URI : MediaStore.Audio.Media.getContentUriForPath(mFileFolderPathsList.get(position));
-        Cursor musicCursor = null;
-        try {
-            musicCursor = musicResolver.query(uri,
-                    new String[]{
-                            MediaStore.Audio.Media._ID,
-                            MediaStore.Audio.Media.ARTIST,
-                            MediaStore.Audio.Media.TITLE,
-                            MediaStore.Audio.Media.DURATION,
-                    },
-                    false ? null : MediaStore.Audio.Media.DATA + "=? ",
-                    false ? null : new String[]{items.get(position).getCanonicalPath()},
-                    null);
-        } catch (IOException e) {
-            Log.e("SONG_PATH", "Error while trying to get path of " + mFileFolderNameList.get(position));
-        }
 
         holder = new ItemViewHolder();
         if (isFolder) {
+            File folder = items.get(position);
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_folder, parent, false);
             holder.folderIcon = (ImageView) itemLay.findViewById(R.id.folder_icon);
 
-            //TODO get amount of songs, duration of songs
-            if (musicCursor != null && musicCursor.moveToFirst()) {
-
-                int amount = 0;
-                do {
-                    amount++;
-                } while (musicCursor.moveToNext());
-
-                subtitle = amount + " " + mContext.getString(R.string.songs);
-            }
-
             title = mFileFolderNameList.get(position);
+            SparseArray<Long> info = AudioContainer.getInstance().getFolderInfo(folder);
+            if (info == null) {
+                Log.e("JOWER_FOLDER_INFO_ERR", " Can't get folder info from " + folder.getAbsolutePath());
+                subtitle = "unknown";
+            }
+            else {
+                subtitle = info.get(Constants.AMOUNT_KEY) + " " + mContext.getString(R.string.songs);
+                duration = info.get(Constants.DURATION_KEY);
+            }
 
         } else {
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_song, parent, false);
 
             //get info about song
-            if (musicCursor != null && musicCursor.moveToFirst()) {
-
-                int titleColumn = musicCursor.getColumnIndex
-                        (MediaStore.Audio.Media.TITLE);
-                int artistColumn = musicCursor.getColumnIndex
-                        (MediaStore.Audio.Media.ARTIST);
-                int durationColumn = musicCursor.getColumnIndex
-                        (MediaStore.Audio.Media.DURATION);
-
-//
-                title = musicCursor.getString(titleColumn);
-                subtitle = musicCursor.getString(artistColumn);
-                duration = musicCursor.getLong(durationColumn);
-
-            }
-
-            if (musicCursor != null) {
-                musicCursor.close();
+            Song currSong = AudioContainer.getInstance().getSong(items.get(position).getAbsolutePath());
+            if (currSong != null) {
+                title = currSong.getTitle();
+                subtitle = currSong.getArtist();
+                duration = currSong.getDuration();
+            } else {
+                retriever.setDataSource(mContext, Uri.fromFile(items.get(position)));
+                title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                subtitle = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                retriever.release();
             }
 
             itemLay.setTag(R.string.folder_list_item_type, Constants.AUDIO);
-            itemLay.setTag(R.string.folder_path, mFileFolderPathsList.get(position));
+            itemLay.setTag(R.string.folder_path, items.get(position).getAbsolutePath());
             itemLay.setTag(R.string.position, position);
 
         }
@@ -165,11 +141,11 @@ public class FolderAdapter extends ArrayAdapter<String> {
     }
 
     static class ItemViewHolder {
-        public TextView itemTitle;
-        public TextView itemSubtitle;
-        public ImageButton itemMenuBtn;
-        public TextView itemRightSubtitle;
-        public ImageView folderIcon;
+        TextView itemTitle;
+        TextView itemSubtitle;
+        ImageButton itemMenuBtn;
+        TextView itemRightSubtitle;
+        ImageView folderIcon;
 
     }
 }
