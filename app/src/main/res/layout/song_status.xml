@@ -42,40 +42,6 @@
         android:text="Some text..."
         android:textColor="@android:color/darker_gray" />
 
-    <ImageButton
-        android:id="@+id/next_track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/buttons_style"
-        android:onClick="checkButtons"
-        app:srcCompat="@mipmap/ic_fast_forward_white_36dp" />
-
-    <ImageButton
-        android:id="@+id/play_pause_track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@+id/next_track"
-        android:layout_toStartOf="@+id/next_track"
-        android:background="@drawable/buttons_style"/>
-
-    <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@+id/play_pause_track"
-        android:layout_toStartOf="@+id/play_pause_track"
-        android:background="@drawable/buttons_style"
-        android:onClick="checkButtons"
-        app:srcCompat="@mipmap/ic_fast_rewind_white_36dp" />
-
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progressBar"
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
@@ -86,5 +52,34 @@
         android:minHeight="0dp"
         android:progressDrawable="@drawable/progressbar_style"
         android:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/next_track"
+        android:layout_width="52dp"
+        android:layout_height="58dp"
+        android:background="@drawable/buttons_style"
+        app:srcCompat="@mipmap/ic_fast_forward_white_36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="52dp"
+        android:layout_height="58dp"
+        android:background="@drawable/buttons_style"
+        app:srcCompat="@mipmap/ic_fast_rewind_white_36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/play_pause_track"
+        android:layout_toStartOf="@+id/play_pause_track" />
+
+    <ImageButton
+        android:id="@+id/play_pause_track"
+        android:layout_width="52dp"
+        android:layout_height="58dp"
+        android:background="@drawable/buttons_style"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/next_track"
+        android:layout_toStartOf="@+id/next_track" />
 
 </RelativeLayout>

@@ -8,8 +8,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton playPauseButton;
     private boolean isPlay = false;
+    private Toolbar toolbar;
 
     private SongsLoadAsyncTask asyncTask;
 
@@ -47,13 +50,35 @@ public class MainActivity extends AppCompatActivity {
 
         initButtons();
         ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(40);
+        progressBar.setProgress(80);
 
         //todo upload song list
         asyncTask = new SongsLoadAsyncTask(this);
         asyncTask.execute();
 
 //        menuButton = (ImageButton) findViewById(R.id.menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                Toast.makeText(MainActivity.this, "Search item", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.setting:
+                Toast.makeText(MainActivity.this, "Setting item", Toast.LENGTH_SHORT).show();
+                break;
+            case android.R.id.home:
+                drawerLayout.openDrawer(navigationView);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initButtons() {
@@ -76,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -85,13 +110,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.inflateMenu(R.menu.toolbar_menu);
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+//        toolbar.getBackground().setAlpha(125);
     }
 
     private void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation);
 
-        navigationView.setCheckedItem(R.id.artistItem);
+        navigationView.setCheckedItem(R.id.albumsItem);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -165,9 +198,5 @@ public class MainActivity extends AppCompatActivity {
                 navigationView.setCheckedItem(R.id.songsItem);
                 break;
         }
-    }
-
-    public void checkButtons(View view) {
-        Toast.makeText(MainActivity.this, "Button is pressed", Toast.LENGTH_SHORT).show();
     }
 }

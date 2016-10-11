@@ -16,6 +16,7 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                android:titleMarginTop="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -37,12 +38,9 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
-
-
-        <include layout="@layout/song_status"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -54,10 +52,9 @@
         app:menu="@menu/menu_navigation"
         app:headerLayout="@layout/navigation_header"
         android:background="@color/mainBackground"
-        app:itemTextColor="@drawable/navigation_view_text_style"
-        app:itemIconTint="@drawable/navigation_view_icon_style"
+        app:itemTextColor="@android:color/darker_gray"
+        app:itemIconTint="@android:color/darker_gray"
         app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:itemBackground="@drawable/navigation_view_item_style"
         />
 
 
