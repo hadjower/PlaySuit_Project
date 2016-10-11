@@ -1,6 +1,7 @@
 package com.shawasama.playsuit.fragment;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.adapter.SongAdapter;
@@ -15,6 +17,9 @@ import com.shawasama.playsuit.pojo.AudioContainer;
 import com.shawasama.playsuit.pojo.Song;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class SongsFragment extends AbstractTabFragment {
 
@@ -67,11 +72,36 @@ public class SongsFragment extends AbstractTabFragment {
     }
 
     private void connectSongList() {
-        do {
-            songList = AudioContainer.getInstance().getSongList();
-        } while (songList == null);
-        SongAdapter songAdapter = new SongAdapter(getActivity(), songList);
-        songView.setAdapter(songAdapter);
+        AsyncTask<Void, Void, List<Song>> task = new AsyncTask<Void, Void, List<Song>>() {
+            @Override
+            protected List<Song> doInBackground(Void... params) {
+                List<Song> list = null;
+                do {
+                    list = AudioContainer.getInstance().getSongList();
+                } while (list == null);
+                return list;
+            }
+
+            @Override
+            protected void onPostExecute(List<Song> songs) {
+                super.onPostExecute(songs);
+            }
+        }.execute();
+
+        try {
+            songList = task.get(1, TimeUnit.SECONDS);
+            if (songList == null || songList.size()==0) {
+                //TODO Write on background that there are no music
+                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
+            } else {
+                SongAdapter songAdapter = new SongAdapter(getActivity(), songList);
+                songView.setAdapter(songAdapter);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            Toast.makeText(context, "Unable to load music", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

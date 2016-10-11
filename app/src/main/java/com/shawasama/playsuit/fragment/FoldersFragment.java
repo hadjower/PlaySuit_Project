@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
@@ -80,13 +82,19 @@ public class FoldersFragment extends AbstractTabFragment {
             currentDir = rootDir;
         }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                slideUpListExplorer();
-                getDir(currentDir, null);
-            }
-        }, 0);
+        if (currentDir != null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+    //                slideUpListExplorer();
+                    getDir(currentDir, null);
+                }
+            }, 0);
+        } else {
+            //TODO Write on the background the there is no media
+            Toast.makeText(context, "There is no music", Toast.LENGTH_LONG).show();
+            Log.i("CURR_DIR", " Current dir: " + currentDir);
+        }
 
         return view;
     }

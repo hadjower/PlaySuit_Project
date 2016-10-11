@@ -9,4 +9,6 @@ public class Constants {
 
     public static final int AUDIO = 1;
     public static final int FOLDER = 0;
+
+    public static final int REQUEST_PERMISSION = 25;
 }

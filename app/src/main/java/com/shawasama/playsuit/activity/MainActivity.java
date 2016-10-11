@@ -1,9 +1,13 @@
 package com.shawasama.playsuit.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -21,6 +25,8 @@ import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.adapter.TabsFragmentAdapter;
 import com.shawasama.playsuit.asynctask.SongsLoadAsyncTask;
+
+import static com.shawasama.playsuit.Constants.REQUEST_PERMISSION;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,9 +58,15 @@ public class MainActivity extends AppCompatActivity {
         ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.progressBar);
         progressBar.setProgress(80);
 
-        //todo upload song list
+        //upload song list
         asyncTask = new SongsLoadAsyncTask(this);
-        asyncTask.execute();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION);
+        } else
+            asyncTask.execute();
 
 //        menuButton = (ImageButton) findViewById(R.id.menu);
     }
@@ -81,8 +93,24 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                asyncTask.execute();
+            } else {
+                // User refused to grant permission.
+                //TODO show warning dialog
+            }
+        }
+    }
+
     private void initButtons() {
         playPauseButton = (ImageButton) findViewById(R.id.play_pause_track);
+
+
         playPauseButton.setImageDrawable(
                 ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_play_arrow_white_36dp));
         playPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
