@@ -2,15 +2,18 @@ package com.shawasama.playsuit.pojo;
 
 public class Album {
 
-//    private long id;
+    private long id;
     private String title;
     private String artist;
-    private String countSongs;
+    private int countSongs;
+    private String artPath;
 
-    public Album(String title, String artist, String countSongs) {
+    public Album(long id, String title, String artist, int countSongs, String artPath) {
+        this.id = id;
         this.title = title;
         this.artist = artist;
         this.countSongs = countSongs;
+        this.artPath = artPath;
     }
 
     public String getTitle() {
@@ -29,11 +32,11 @@ public class Album {
         this.artist = artist;
     }
 
-    public String getCountSongs() {
+    public int getCountSongs() {
         return countSongs;
     }
 
-    public void setCountSongs(String countSongs) {
+    public void setCountSongs(int countSongs) {
         this.countSongs = countSongs;
     }
 }

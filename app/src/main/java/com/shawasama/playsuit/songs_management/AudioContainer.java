@@ -57,7 +57,8 @@ public final class AudioContainer {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.IS_MUSIC
+                MediaStore.Audio.Media.IS_MUSIC,
+                MediaStore.Audio.Media.ALBUM
         };
         Cursor musicCursor = musicResolver.query(musicUri, projection, null, null, null);
 
@@ -77,7 +78,8 @@ public final class AudioContainer {
                     (MediaStore.Audio.Media.DISPLAY_NAME);
             int albumIDColumn = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.ALBUM_ID);
-
+            int albumColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM);
             List<String> songDirPaths = new ArrayList<>();
             //add songs to list
             do {
@@ -92,6 +94,7 @@ public final class AudioContainer {
                 String thisPath = musicCursor.getString(dataColumn);
                 String thisFileName = musicCursor.getString(fileNameColumn);
                 long thisAlbumID = musicCursor.getLong(albumIDColumn);
+                String thisAlbum = musicCursor.getString(albumColumn);
 
                 Song thisSong = new Song(
                         thisID,
@@ -100,7 +103,8 @@ public final class AudioContainer {
                         thisDuration,
                         thisPath,
                         thisFileName,
-                        thisAlbumID
+                        thisAlbumID,
+                        thisAlbum
                 );
                 songList.add(thisSong);
                 pathSongMap.put(thisPath, thisSong);
