@@ -1,6 +1,7 @@
 package com.shawasama.playsuit.activity;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -25,6 +27,7 @@ import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.adapter.TabsFragmentAdapter;
 import com.shawasama.playsuit.asynctask.SongsLoadAsyncTask;
+import com.shawasama.playsuit.folders_management.FoldersFragment;
 
 import static com.shawasama.playsuit.Constants.REQUEST_PERMISSION;
 
@@ -38,11 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton playPauseButton;
     private boolean isPlay = false;
-    private Toolbar toolbar;
 
     private SongsLoadAsyncTask asyncTask;
-
-//    private ImageButton menuButton;
+    private TabsFragmentAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +54,10 @@ public class MainActivity extends AppCompatActivity {
         initToolbar();
         initNavigationView();
         initTabs();
-
-        initButtons();
-        ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(80);
+        initSongBar();
 
         //upload song list
-        asyncTask = new SongsLoadAsyncTask(this);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION);
-        } else
-            asyncTask.execute();
-
-//        menuButton = (ImageButton) findViewById(R.id.menu);
+        checkPermissionAndLoadSongs();
     }
 
     @Override
@@ -102,34 +91,81 @@ public class MainActivity extends AppCompatActivity {
                 asyncTask.execute();
             } else {
                 // User refused to grant permission.
-                //TODO show warning dialog
+                showWarningDialog();
             }
         }
     }
 
-    private void initButtons() {
-        playPauseButton = (ImageButton) findViewById(R.id.play_pause_track);
+    private void showWarningDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Permission not granted!!!")
+                .setMessage("Permission to read external storage hasn't been granted." +
+                        " Program is unable to load songs from device.")
+                .setCancelable(true)
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.exit(0);
+                    }
+                })
+                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        checkPermissionAndLoadSongs();
+                    }
+                })
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        System.exit(0);
+                    }
+                });
+    }
 
+    @Override
+    public void onBackPressed() {
+        switch (viewPager.getCurrentItem()) {
+            case Constants.TAB_ARTIST:
+                super.onBackPressed();
+                break;
+            case Constants.TAB_ALBUMS:
+                super.onBackPressed();
+                break;
+            case Constants.TAB_FOLDERS:
+                if (!((FoldersFragment) adapter.getItem(Constants.TAB_FOLDERS)).goBack()) {
+                    super.onBackPressed();
+                }
+                break;
+            case Constants.TAB_PLAYLISTS:
+                super.onBackPressed();
+                break;
+            case Constants.TAB_SONGS:
+                break;
+            default:
+                super.onBackPressed();
+                break;
+        }
+    }
+
+    private void initSongBar() {
+        playPauseButton = (ImageButton) findViewById(R.id.play_pause_track);
 
         playPauseButton.setImageDrawable(
                 ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_play_arrow_white_36dp));
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isPlay) {
-                    playPauseButton.setImageDrawable(
-                            ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_play_arrow_white_36dp));
-                } else {
-                    playPauseButton.setImageDrawable(
-                            ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_pause_white_36dp));
-                }
+                ContextCompat.getDrawable(getApplicationContext(),
+                        isPlay ? R.mipmap.ic_play_arrow_white_36dp : R.mipmap.ic_pause_white_36dp);
                 isPlay = !isPlay; // reverse
             }
         });
+        ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.progressBar);
+        progressBar.setProgress(80);
     }
 
     private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -145,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-//        toolbar.getBackground().setAlpha(125);
     }
 
     private void initNavigationView() {
@@ -182,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        TabsFragmentAdapter adapter = new TabsFragmentAdapter(this, getSupportFragmentManager());
+        adapter = new TabsFragmentAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -202,6 +237,16 @@ public class MainActivity extends AppCompatActivity {
         });
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void checkPermissionAndLoadSongs() {
+        asyncTask = new SongsLoadAsyncTask(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION);
+        } else
+            asyncTask.execute();
     }
 
     private void showTab(int tab_number) {

@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.adapter;
+package com.shawasama.playsuit.songs_management;
 
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;

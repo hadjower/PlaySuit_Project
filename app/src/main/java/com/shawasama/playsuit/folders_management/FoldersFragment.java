@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.fragment;
+package com.shawasama.playsuit.folders_management;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.adapter.FolderAdapter;
-import com.shawasama.playsuit.pojo.AudioContainer;
-import com.shawasama.playsuit.pojo.Util;
+import com.shawasama.playsuit.fragment.AbstractTabFragment;
+import com.shawasama.playsuit.songs_management.AudioContainer;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,12 +32,12 @@ public class FoldersFragment extends AbstractTabFragment {
     private Application mApp;
     private ListView listExplorer;
 
+    private FoldersManager manager;
+
     //Folder parameter
     private String rootDir;
     private static String currentDir;
-    private ArrayList<String> fileFolderNameList;
-    private ArrayList<String> fileFolderPathList;
-    private ArrayList<Integer> fileFolderTypeList;
+    private List<File> currDirList;
 
     //HashMap to store the each folder's previous scroll/position state.
     private HashMap<String, Parcelable> mFolderStateMap;
@@ -58,12 +52,17 @@ public class FoldersFragment extends AbstractTabFragment {
         return fragment;
     }
 
+    public static String getCurrentDir() {
+        return currentDir;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         context = getActivity().getApplicationContext();
         mApp = (Application) context;
+        manager = FoldersManager.getInstance();
         mFolderStateMap = new HashMap<>();
 
         listExplorer = (ListView) view.findViewById(R.id.listview);
@@ -73,14 +72,14 @@ public class FoldersFragment extends AbstractTabFragment {
         rootDir = AudioContainer.getInstance().getRootDir();
 
         if (currentDir == null) {
-            currentDir = rootDir;
+            currentDir = manager.getRootDir();
         }
 
         if (currentDir != null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-    //                slideUpListExplorer();
+                    //                slideUpListExplorer();
                     getDir(currentDir, null);
                 }
             }, 0);
@@ -98,6 +97,7 @@ public class FoldersFragment extends AbstractTabFragment {
         context = null;
         listExplorer = null;
     }
+
 
     private void slideUpListExplorer() {
         getDir(rootDir, null);
@@ -142,79 +142,15 @@ public class FoldersFragment extends AbstractTabFragment {
      *                     null if the ListView's position should not be restored.
      */
     private void getDir(String dirPath, Parcelable restoreState) {
-        fileFolderNameList = new ArrayList<>();
-        fileFolderPathList = new ArrayList<>();
-        fileFolderTypeList = new ArrayList<>();
-
-        File f = new File(dirPath);
-        List<File> files = Arrays.asList(f.listFiles());
-        List<File> foldersAndMusic = new ArrayList<>();
-        File emptyFile;
-
-        if (!currentDir.equals(rootDir)) {
-            //add empty file so we could go back by clicking its view
-            emptyFile = new File("..");
-            foldersAndMusic.add(emptyFile);
-            fileFolderTypeList.add(0);
-            fileFolderNameList.add("..");
-            fileFolderPathList.add("..");
-        }
-
-        if (!files.isEmpty()) {
-            //Sort the files by name.
-            Collections.sort(files, new Comparator<File>() {
-                @Override
-                public int compare(File f1, File f2) {
-                    return f1.getName().compareTo(f2.getName());
-                }
-            });
-
-            //Sort the files by type(folder or music)
-            Collections.sort(files, new Comparator<File>() {
-                @Override
-                public int compare(File f1, File f2) {
-                    int typeF1 = f1.isDirectory() ? Constants.FOLDER : Constants.AUDIO;
-                    int typeF2 = f2.isDirectory() ? Constants.FOLDER : Constants.AUDIO;
-                    return typeF1 - typeF2;
-                }
-            });
-
-            for (File file : files) {
-                if (file != null && !file.isHidden() && file.canRead()) {
-
-                    if (file.isDirectory()) {
-
-                        String filePath = file.getAbsolutePath();
-                        if (AudioContainer.getInstance().isStoresMusic(filePath)) {
-                            fileFolderPathList.add(filePath);
-                            fileFolderNameList.add(file.getName());
-                            fileFolderTypeList.add(Constants.FOLDER);
-                            foldersAndMusic.add(file);
-                        }
-
-                    } else if (Util.isAudio(file)) {
-
-                        fileFolderNameList.add(file.getName());
-                        fileFolderTypeList.add(Constants.AUDIO);
-                        try {
-                            String path = file.getCanonicalPath();
-                            fileFolderPathList.add(path);
-                        } catch (IOException ignored) {
-                        }
-                        foldersAndMusic.add(file);
-                    }
-
-                }
-
-            }
-        }
+        FoldersManager.FileListsContainer fileListsContainer = manager.getFileListContainer(dirPath);
+        currDirList = fileListsContainer.getFoldersAndMusic();
 
         FolderAdapter folderAdapter = new FolderAdapter(
                 getActivity(),
                 this,
-                fileFolderNameList,
-                fileFolderTypeList,
-                foldersAndMusic);
+                fileListsContainer.getFileFolderNameList(),
+                fileListsContainer.getFileFolderTypeList(),
+                currDirList);
 
         listExplorer.setAdapter(folderAdapter);
         folderAdapter.notifyDataSetChanged();
@@ -233,8 +169,7 @@ public class FoldersFragment extends AbstractTabFragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int index, long arg3) {
                 if (index == 0 && !currentDir.equals(rootDir)) {
-                    currentDir = currentDir.substring(0, currentDir.lastIndexOf('/'));
-                    getDir(currentDir, mFolderStateMap.get(currentDir));
+                    goBack();
                     return;
                 }
                 //Store the current folder's state in the HashMap.
@@ -243,10 +178,10 @@ public class FoldersFragment extends AbstractTabFragment {
                 }
 
                 mFolderStateMap.put(currentDir, listExplorer.onSaveInstanceState());
-                String newPath = fileFolderPathList.get(index);
+                String newPath = currDirList.get(index).getAbsolutePath();
 
                 //Check if the selected item is a folder or a file.
-                if (fileFolderTypeList.get(index) == Constants.FOLDER) {
+                if (currDirList.get(index).isDirectory()) {
                     currentDir = newPath;
                     getDir(newPath, null);
                 } else {
@@ -255,6 +190,15 @@ public class FoldersFragment extends AbstractTabFragment {
                 }
             }
         });
+    }
+
+    public boolean goBack() {
+        if (currentDir.equals(manager.getRootDir()))
+            return false;
+        currentDir = currentDir.substring(0, currentDir.lastIndexOf('/'));
+        Log.i("JOWER", " Current dir: " + currentDir);
+        getDir(currentDir, mFolderStateMap.get(currentDir));
+        return true;
     }
 
     public void refreshListView() {

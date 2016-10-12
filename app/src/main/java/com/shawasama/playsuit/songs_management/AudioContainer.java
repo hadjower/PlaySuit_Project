@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.pojo;
+package com.shawasama.playsuit.songs_management;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.util.SparseArray;
 
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
+import com.shawasama.playsuit.pojo.Song;
 
 import java.io.File;
 import java.util.ArrayList;

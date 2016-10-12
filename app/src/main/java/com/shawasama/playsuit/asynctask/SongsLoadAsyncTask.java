@@ -3,7 +3,7 @@ package com.shawasama.playsuit.asynctask;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.shawasama.playsuit.pojo.AudioContainer;
+import com.shawasama.playsuit.songs_management.AudioContainer;
 
 
 public class SongsLoadAsyncTask extends AsyncTask<Void, Void, Void> {

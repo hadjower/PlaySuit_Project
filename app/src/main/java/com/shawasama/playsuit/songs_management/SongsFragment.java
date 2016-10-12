@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.fragment;
+package com.shawasama.playsuit.songs_management;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,8 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.adapter.SongAdapter;
-import com.shawasama.playsuit.pojo.AudioContainer;
+import com.shawasama.playsuit.fragment.AbstractTabFragment;
 import com.shawasama.playsuit.pojo.Song;
 
 import java.util.List;

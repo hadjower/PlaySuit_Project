@@ -10,8 +10,10 @@ public class Util {
     public static String getSongDuration(long time) {
         StringBuilder duration = new StringBuilder("");
         long seconds = time / 1000;
-        long minutes = (seconds / 60) % 60;
-        long hours = (minutes / 60) % 60;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        seconds %= 60;
+        minutes %= 60;
 
         if (hours > 0) {
             duration.append(String.valueOf(hours)).append(":");

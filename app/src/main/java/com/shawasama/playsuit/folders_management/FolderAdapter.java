@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.adapter;
+package com.shawasama.playsuit.folders_management;
 
 import android.app.Application;
 import android.content.Context;
@@ -17,10 +17,9 @@ import android.widget.TextView;
 
 import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.fragment.FoldersFragment;
-import com.shawasama.playsuit.pojo.AudioContainer;
 import com.shawasama.playsuit.pojo.Song;
 import com.shawasama.playsuit.pojo.Util;
+import com.shawasama.playsuit.songs_management.AudioContainer;
 
 import java.io.File;
 import java.util.List;
@@ -33,10 +32,6 @@ public class FolderAdapter extends ArrayAdapter<String> {
     private FoldersFragment mFragment;
 
     private List<File> items;
-    private List<String> mFileFolderNameList;
-    private List<Integer> mFileFolderTypeList;
-
-    private MediaMetadataRetriever retriever;
 
     public FolderAdapter
             (Context context, FoldersFragment fragment,
@@ -49,11 +44,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
         mApp = (Application) context.getApplicationContext();
         mFragment = fragment;
 
-        this.mFileFolderNameList = nameList;
-        this.mFileFolderTypeList = mFileFolderTypeList;
         this.items = items;
-
-        retriever = new MediaMetadataRetriever();
     }
 
 
@@ -70,7 +61,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
             return itemLay;
         }
 
-        boolean isFolder = mFileFolderTypeList.get(position) == Constants.FOLDER;
+        boolean isFolder = items.get(position).isDirectory();
 
         ItemViewHolder holder;
         String title, subtitle;
@@ -82,13 +73,12 @@ public class FolderAdapter extends ArrayAdapter<String> {
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_folder, parent, false);
             holder.folderIcon = (ImageView) itemLay.findViewById(R.id.folder_icon);
 
-            title = mFileFolderNameList.get(position);
+            title = items.get(position).getName();
             SparseArray<Long> info = AudioContainer.getInstance().getFolderInfo(folder);
             if (info == null) {
                 Log.e("JOWER_FOLDER_INFO_ERR", " Can't get folder info from " + folder.getAbsolutePath());
                 subtitle = "unknown";
-            }
-            else {
+            } else {
                 subtitle = info.get(Constants.AMOUNT_KEY) + " " + mContext.getString(R.string.songs);
                 duration = info.get(Constants.DURATION_KEY);
             }
@@ -103,6 +93,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
                 subtitle = currSong.getArtist();
                 duration = currSong.getDuration();
             } else {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 retriever.setDataSource(mContext, Uri.fromFile(items.get(position)));
                 title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                 subtitle = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
