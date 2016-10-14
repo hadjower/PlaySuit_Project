@@ -44,7 +44,8 @@ public class SongsFragment extends AbstractTabFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         songView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        songView.setLayoutManager(new LinearLayoutManager(context));
+        manager = new LinearLayoutManager(context);
+        songView.setLayoutManager(manager);
         connectSongList();
         return view;
     }

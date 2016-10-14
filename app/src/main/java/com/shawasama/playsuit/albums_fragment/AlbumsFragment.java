@@ -1,6 +1,7 @@
 package com.shawasama.playsuit.albums_fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,6 +43,10 @@ public class AlbumsFragment extends AbstractTabFragment {
         context = getActivity().getApplicationContext();
 
         GridLayoutManager manager = new GridLayoutManager(context, 2);
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            manager.setSpanCount(3);
+        }
+        super.manager = manager;
         albumsView.setLayoutManager(manager);
         try {
             AsyncLoadAllAlbumsTask asyncTask = (AsyncLoadAllAlbumsTask) ((MainActivity) getActivity()).getAsyncTask(Constants.ASYNC_ALBUMS);

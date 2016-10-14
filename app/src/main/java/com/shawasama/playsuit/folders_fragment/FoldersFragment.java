@@ -63,7 +63,8 @@ public class FoldersFragment extends AbstractTabFragment {
         mFolderStateMap = new HashMap<>();
 
         recyclerExplorer = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerExplorer.setLayoutManager(new LinearLayoutManager(context));
+        manager = new LinearLayoutManager(context);
+        recyclerExplorer.setLayoutManager(manager);
 
         initRecyclerListeners();
 

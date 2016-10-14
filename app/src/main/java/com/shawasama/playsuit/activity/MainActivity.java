@@ -3,6 +3,7 @@ package com.shawasama.playsuit.activity;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +30,7 @@ import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.adapter.TabsFragmentAdapter;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllAlbumsTask;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
-import com.shawasama.playsuit.folders_fragment.FoldersFragment;
+import com.shawasama.playsuit.fragment.AbstractTabFragment;
 import com.shawasama.playsuit.util.Constants;
 
 import java.util.HashMap;
@@ -142,28 +144,20 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-//    @Override
-    public void onBacPressed() {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
         switch (viewPager.getCurrentItem()) {
-            case Constants.TAB_ARTIST:
-                super.onBackPressed();
-                break;
             case Constants.TAB_ALBUMS:
-                super.onBackPressed();
-                break;
-            case Constants.TAB_FOLDERS:
-                if (!((FoldersFragment) adapter.getItem(Constants.TAB_FOLDERS)).goBack()) {
-                    super.onBackPressed();
+//            case Constants.TAB_ARTIST:
+                switch (newConfig.orientation) {
+                    case Configuration.ORIENTATION_LANDSCAPE:
+                        ((GridLayoutManager)((AbstractTabFragment)adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(3);
+                        break;
+                    case Configuration.ORIENTATION_PORTRAIT:
+                        ((GridLayoutManager)((AbstractTabFragment)adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(2);
+                        break;
                 }
-                break;
-            case Constants.TAB_PLAYLISTS:
-                super.onBackPressed();
-                break;
-            case Constants.TAB_SONGS:
-                break;
-            default:
-                super.onBackPressed();
-                break;
         }
     }
 
