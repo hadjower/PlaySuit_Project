@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.songs_management;
+package com.shawasama.playsuit.songs_fragment;
 
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.pojo.Song;
-import com.shawasama.playsuit.pojo.Util;
+import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.util.Util;
 
 import java.util.List;
 

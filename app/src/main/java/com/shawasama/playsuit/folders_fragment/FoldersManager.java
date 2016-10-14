@@ -1,9 +1,9 @@
-package com.shawasama.playsuit.folders_management;
+package com.shawasama.playsuit.folders_fragment;
 
 
-import com.shawasama.playsuit.Constants;
-import com.shawasama.playsuit.pojo.Util;
-import com.shawasama.playsuit.songs_management.AudioContainer;
+import com.shawasama.playsuit.songs_fragment.SongsManager;
+import com.shawasama.playsuit.util.Constants;
+import com.shawasama.playsuit.util.Util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class FoldersManager {
 
     public String getRootDir() {
         if (rootDir == null)
-            rootDir = AudioContainer.getInstance().getRootDir();
+            rootDir = SongsManager.getInstance().getRootDir();
         return rootDir;
     }
 
@@ -75,7 +75,7 @@ public class FoldersManager {
 
                     if (file.isDirectory()) {
                         String filePath = file.getAbsolutePath();
-                        if (AudioContainer.getInstance().isStoresMusic(filePath)) {
+                        if (SongsManager.getInstance().isStoresMusic(filePath)) {
                             fileFolderNameList.add(file.getName());
                             fileFolderTypeList.add(Constants.FOLDER);
                             foldersAndMusic.add(file);

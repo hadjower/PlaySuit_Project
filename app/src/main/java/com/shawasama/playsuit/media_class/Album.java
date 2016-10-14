@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.pojo;
+package com.shawasama.playsuit.media_class;
 
 public class Album {
 
@@ -20,23 +20,15 @@ public class Album {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getArtist() {
         return artist;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
     }
 
     public int getCountSongs() {
         return countSongs;
     }
 
-    public void setCountSongs(int countSongs) {
-        this.countSongs = countSongs;
+    public String getArtPath() {
+        return artPath;
     }
 }

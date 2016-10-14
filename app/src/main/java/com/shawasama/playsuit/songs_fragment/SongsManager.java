@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.songs_management;
+package com.shawasama.playsuit.songs_fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,9 +8,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.pojo.Song;
+import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.util.Constants;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,22 +20,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class AudioContainer {
-    private static AudioContainer instance;
+public final class SongsManager {
+    private static SongsManager instance;
 
     private List<Song> songList;
     private PathSongInfoContainer container;
-    private Map<String, Song> pathSongMap;
+    private Map<String, Song> songMap;
 
     private String rootDir;
 
 
-    private AudioContainer() {
+    private SongsManager() {
     }
 
-    public static synchronized AudioContainer getInstance() {
+    public static synchronized SongsManager getInstance() {
         if (instance == null)
-            instance = new AudioContainer();
+            instance = new SongsManager();
         return instance;
     }
 
@@ -44,7 +44,7 @@ public final class AudioContainer {
             return;
         }
         songList = new ArrayList<>();
-        pathSongMap = new HashMap<>();
+        songMap = new HashMap<>();
         container = new PathSongInfoContainer();
 
         ContentResolver musicResolver = context.getContentResolver();
@@ -107,7 +107,7 @@ public final class AudioContainer {
                         thisAlbum
                 );
                 songList.add(thisSong);
-                pathSongMap.put(thisPath, thisSong);
+                songMap.put(thisPath, thisSong);
 
                 thisPath = thisPath.substring(0, thisPath.lastIndexOf("/"));
 
@@ -152,7 +152,7 @@ public final class AudioContainer {
 
     public boolean isStoresMusic(String directoryPath) {
         if (container == null) {
-            Log.e("AudioContainer", " Field container is null, while trying to call method isStoresMusic");
+            Log.e("SongsManager", " Field container is null, while trying to call method isStoresMusic");
             return false;
         }
         return container.isStoresMusic(directoryPath);
@@ -170,7 +170,7 @@ public final class AudioContainer {
     }
 
     public Song getSong(String path) {
-        return pathSongMap.get(path);
+        return songMap.get(path);
     }
 
 

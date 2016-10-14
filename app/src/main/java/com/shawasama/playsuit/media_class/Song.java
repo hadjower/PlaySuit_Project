@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.pojo;
+package com.shawasama.playsuit.media_class;
 
 
 public class Song {

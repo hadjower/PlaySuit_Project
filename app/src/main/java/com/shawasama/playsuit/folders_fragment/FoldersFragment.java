@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.folders_management;
+package com.shawasama.playsuit.folders_fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import android.widget.ListView;
 
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
-import com.shawasama.playsuit.songs_management.AudioContainer;
+import com.shawasama.playsuit.songs_fragment.SongsManager;
 
 import java.io.File;
 import java.util.HashMap;
@@ -31,8 +30,6 @@ public class FoldersFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.listview_layout;
     private Application mApp;
     private ListView listExplorer;
-
-    private FoldersManager manager;
 
     //Folder parameter
     private String rootDir;
@@ -62,17 +59,16 @@ public class FoldersFragment extends AbstractTabFragment {
         view = inflater.inflate(LAYOUT, container, false);
         context = getActivity().getApplicationContext();
         mApp = (Application) context;
-        manager = FoldersManager.getInstance();
         mFolderStateMap = new HashMap<>();
 
         listExplorer = (ListView) view.findViewById(R.id.listview);
         listExplorer.setFastScrollEnabled(true);
 
 //        rootDir = Environment.getExternalStorageDirectory().getPath();
-        rootDir = AudioContainer.getInstance().getRootDir();
+        rootDir = SongsManager.getInstance().getRootDir();
 
         if (currentDir == null) {
-            currentDir = manager.getRootDir();
+            currentDir = FoldersManager.getInstance().getRootDir();
         }
 
         if (currentDir != null) {
@@ -142,14 +138,13 @@ public class FoldersFragment extends AbstractTabFragment {
      *                     null if the ListView's position should not be restored.
      */
     private void getDir(String dirPath, Parcelable restoreState) {
-        FoldersManager.FileListsContainer fileListsContainer = manager.getFileListContainer(dirPath);
+        FoldersManager.FileListsContainer fileListsContainer = FoldersManager.getInstance().getFileListContainer(dirPath);
         currDirList = fileListsContainer.getFoldersAndMusic();
 
         FolderAdapter folderAdapter = new FolderAdapter(
                 getActivity(),
                 this,
                 fileListsContainer.getFileFolderNameList(),
-                fileListsContainer.getFileFolderTypeList(),
                 currDirList);
 
         listExplorer.setAdapter(folderAdapter);
@@ -193,11 +188,10 @@ public class FoldersFragment extends AbstractTabFragment {
     }
 
     public boolean goBack() {
-        if (currentDir.equals(manager.getRootDir()))
+        if (currentDir.equals(FoldersManager.getInstance().getRootDir()))
             return false;
         currentDir = currentDir.substring(0, currentDir.lastIndexOf('/'));
-        Log.i("JOWER", " Current dir: " + currentDir);
-        getDir(currentDir, mFolderStateMap.get(currentDir));
+        getDir(currentDir, mFolderStateMap == null ? null : mFolderStateMap.get(currentDir));
         return true;
     }
 

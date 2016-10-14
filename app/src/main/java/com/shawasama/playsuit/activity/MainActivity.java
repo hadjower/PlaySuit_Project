@@ -3,6 +3,7 @@ package com.shawasama.playsuit.activity;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,13 +24,18 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.adapter.TabsFragmentAdapter;
-import com.shawasama.playsuit.asynctask.SongsLoadAsyncTask;
-import com.shawasama.playsuit.folders_management.FoldersFragment;
+import com.shawasama.playsuit.asynctask.AsyncLoadAllAlbumsTask;
+import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
+import com.shawasama.playsuit.folders_fragment.FoldersFragment;
+import com.shawasama.playsuit.util.Constants;
 
-import static com.shawasama.playsuit.Constants.REQUEST_PERMISSION;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static com.shawasama.playsuit.util.Constants.REQUEST_PERMISSION;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton playPauseButton;
     private boolean isPlay = false;
 
-    private SongsLoadAsyncTask asyncTask;
+    private Map<Integer, AsyncTask> asyncTaskHashMap;
     private TabsFragmentAdapter adapter;
 
     @Override
@@ -57,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         initSongBar();
 
         //upload song list
-        checkPermissionAndLoadSongs();
+        checkPermissionAndLoadMediaContent();
     }
 
     @Override
@@ -88,10 +94,24 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted.
-                asyncTask.execute();
+                executeLoadAsyncTasks();
             } else {
                 // User refused to grant permission.
                 showWarningDialog();
+            }
+        }
+    }
+
+    private void executeLoadAsyncTasks() {
+        Set<Integer> keySet = asyncTaskHashMap.keySet();
+        for (Integer key : keySet) {
+            switch (key) {
+                case Constants.ASYNC_SONGS:
+                    ((AsyncLoadAllSongsTask) asyncTaskHashMap.get(key)).execute();
+                    break;
+                case Constants.ASYNC_ALBUMS:
+                    ((AsyncLoadAllAlbumsTask) asyncTaskHashMap.get(key)).execute();
+                    break;
             }
         }
     }
@@ -111,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        checkPermissionAndLoadSongs();
+                        checkPermissionAndLoadMediaContent();
                     }
                 })
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -239,14 +259,17 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void checkPermissionAndLoadSongs() {
-        asyncTask = new SongsLoadAsyncTask(this);
+    private void checkPermissionAndLoadMediaContent() {
+        asyncTaskHashMap = new HashMap<>();
+        asyncTaskHashMap.put(Constants.ASYNC_SONGS, new AsyncLoadAllSongsTask(this));
+        asyncTaskHashMap.put(Constants.ASYNC_ALBUMS, new AsyncLoadAllAlbumsTask(this));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     REQUEST_PERMISSION);
         } else
-            asyncTask.execute();
+            executeLoadAsyncTasks();
     }
 
     private void showTab(int tab_number) {
@@ -271,5 +294,9 @@ public class MainActivity extends AppCompatActivity {
                 navigationView.setCheckedItem(R.id.songsItem);
                 break;
         }
+    }
+
+    public AsyncTask getAsyncTask(int key) {
+        return asyncTaskHashMap.get(key);
     }
 }

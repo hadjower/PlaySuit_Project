@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.albums;
+package com.shawasama.playsuit.albums_fragment;
 
 
 import android.content.ContentResolver;
@@ -7,23 +7,29 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.shawasama.playsuit.pojo.Album;
+import com.shawasama.playsuit.media_class.Album;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class AlbumsContainer {
-    private static AlbumsContainer instance;
+public class AlbumsManager {
+    private static AlbumsManager instance;
 
     List<Album> albums;
 
-    private AlbumsContainer() {
+    private AlbumsManager() {
     }
 
-    public static synchronized AlbumsContainer getInstance() {
+    public static synchronized AlbumsManager getInstance() {
         if (instance == null)
-            instance = new AlbumsContainer();
+            instance = new AlbumsManager();
         return instance;
+    }
+
+    public List<Album> getAlbums() {
+        return albums;
     }
 
     public void loadAlbums(Context context) {
@@ -53,10 +59,18 @@ public class AlbumsContainer {
                 String artist = albumCursor.getString(artistCol);
                 String artPath = albumCursor.getString(artCol);
                 int songs = albumCursor.getInt(songsCol);
-//                Log.i("JOWER", " Album: " + id + " | " + name + " | " + artist + " | " + songs + " | " + artPath);
                 albums.add(new Album(id, name, artist, songs, artPath));
             } while (albumCursor.moveToNext());
             albumCursor.close();
+
+            Collections.sort(albums, new Comparator<Album>() {
+                @Override
+                public int compare(Album a1, Album a2) {
+                    return a1.getTitle().compareTo(a2.getTitle());
+                }
+            });
         }
+
+
     }
 }

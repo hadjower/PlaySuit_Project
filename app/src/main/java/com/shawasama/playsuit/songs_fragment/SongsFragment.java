@@ -1,7 +1,6 @@
-package com.shawasama.playsuit.songs_management;
+package com.shawasama.playsuit.songs_fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,8 +11,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
+import com.shawasama.playsuit.activity.MainActivity;
+import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
-import com.shawasama.playsuit.pojo.Song;
+import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.util.Constants;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -71,25 +73,10 @@ public class SongsFragment extends AbstractTabFragment {
     }
 
     private void connectSongList() {
-        AsyncTask<Void, Void, List<Song>> task = new AsyncTask<Void, Void, List<Song>>() {
-            @Override
-            protected List<Song> doInBackground(Void... params) {
-                List<Song> list = null;
-                do {
-                    list = AudioContainer.getInstance().getSongList();
-                } while (list == null);
-                return list;
-            }
-
-            @Override
-            protected void onPostExecute(List<Song> songs) {
-                super.onPostExecute(songs);
-            }
-        }.execute();
-
         try {
-            songList = task.get(1, TimeUnit.SECONDS);
-            if (songList == null || songList.size()==0) {
+            AsyncLoadAllSongsTask asyncTask = (AsyncLoadAllSongsTask) ((MainActivity) getActivity()).getAsyncTask(Constants.ASYNC_SONGS);
+            songList = asyncTask.get(2, TimeUnit.SECONDS);
+            if (songList == null || songList.size() == 0) {
                 //TODO Write on background that there are no music
 //                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
             } else {

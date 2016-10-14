@@ -9,13 +9,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 
-import com.shawasama.playsuit.Constants;
-import com.shawasama.playsuit.folders_management.FoldersFragment;
+import com.shawasama.playsuit.albums_fragment.AlbumsFragment;
+import com.shawasama.playsuit.folders_fragment.FoldersFragment;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
-import com.shawasama.playsuit.fragment.AlbumsFragment;
 import com.shawasama.playsuit.fragment.ArtistFragment;
 import com.shawasama.playsuit.fragment.PlaylistsFragment;
-import com.shawasama.playsuit.songs_management.SongsFragment;
+import com.shawasama.playsuit.songs_fragment.SongsFragment;
+import com.shawasama.playsuit.util.Constants;
 
 public class TabsFragmentAdapter extends FragmentPagerAdapter {
 

@@ -1,4 +1,4 @@
-package com.shawasama.playsuit.folders_management;
+package com.shawasama.playsuit.folders_fragment;
 
 import android.app.Application;
 import android.content.Context;
@@ -15,11 +15,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.shawasama.playsuit.Constants;
 import com.shawasama.playsuit.R;
-import com.shawasama.playsuit.pojo.Song;
-import com.shawasama.playsuit.pojo.Util;
-import com.shawasama.playsuit.songs_management.AudioContainer;
+import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.songs_fragment.SongsManager;
+import com.shawasama.playsuit.util.Constants;
+import com.shawasama.playsuit.util.Util;
 
 import java.io.File;
 import java.util.List;
@@ -36,7 +36,6 @@ public class FolderAdapter extends ArrayAdapter<String> {
     public FolderAdapter
             (Context context, FoldersFragment fragment,
              List<String> nameList,
-             List<Integer> mFileFolderTypeList,
              List<File> items) {
         super(context, -1, nameList);
 
@@ -74,7 +73,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
             holder.folderIcon = (ImageView) itemLay.findViewById(R.id.folder_icon);
 
             title = items.get(position).getName();
-            SparseArray<Long> info = AudioContainer.getInstance().getFolderInfo(folder);
+            SparseArray<Long> info = SongsManager.getInstance().getFolderInfo(folder);
             if (info == null) {
                 Log.e("JOWER_FOLDER_INFO_ERR", " Can't get folder info from " + folder.getAbsolutePath());
                 subtitle = "unknown";
@@ -87,7 +86,7 @@ public class FolderAdapter extends ArrayAdapter<String> {
             itemLay = LayoutInflater.from(mContext).inflate(R.layout.item_song, parent, false);
 
             //get info about song
-            Song currSong = AudioContainer.getInstance().getSong(items.get(position).getAbsolutePath());
+            Song currSong = SongsManager.getInstance().getSong(items.get(position).getAbsolutePath());
             if (currSong != null) {
                 title = currSong.getTitle();
                 subtitle = currSong.getArtist();
