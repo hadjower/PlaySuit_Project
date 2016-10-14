@@ -1,6 +1,5 @@
 package com.shawasama.playsuit.folders_fragment;
 
-
 import com.shawasama.playsuit.songs_fragment.SongsManager;
 import com.shawasama.playsuit.util.Constants;
 import com.shawasama.playsuit.util.Util;
@@ -32,9 +31,7 @@ public class FoldersManager {
         return rootDir;
     }
 
-    public FileListsContainer getFileListContainer(String dirPath){
-        List<String> fileFolderNameList = new ArrayList<>();
-        List<Integer> fileFolderTypeList = new ArrayList<>();
+    public List<File> getFoldersAndMusic(String dirPath){
         List<File> foldersAndMusic = new ArrayList<>();
 
         String currentDir = FoldersFragment.getCurrentDir();
@@ -47,8 +44,6 @@ public class FoldersManager {
             //add empty file so we could go back by clicking its view
             emptyFile = new File("..");
             foldersAndMusic.add(emptyFile);
-            fileFolderTypeList.add(0);
-            fileFolderNameList.add("..");
         }
 
         if (!files.isEmpty()) {
@@ -76,14 +71,10 @@ public class FoldersManager {
                     if (file.isDirectory()) {
                         String filePath = file.getAbsolutePath();
                         if (SongsManager.getInstance().isStoresMusic(filePath)) {
-                            fileFolderNameList.add(file.getName());
-                            fileFolderTypeList.add(Constants.FOLDER);
                             foldersAndMusic.add(file);
                         }
 
                     } else if (Util.isAudio(file)) {
-                        fileFolderNameList.add(file.getName());
-                        fileFolderTypeList.add(Constants.AUDIO);
                         foldersAndMusic.add(file);
                     }
 
@@ -91,30 +82,6 @@ public class FoldersManager {
 
             }
         }
-        return new FileListsContainer(fileFolderNameList, fileFolderTypeList, foldersAndMusic);
-    }
-
-    public class FileListsContainer {
-        private List<String> fileFolderNameList;
-        private List<Integer> fileFolderTypeList;
-        private List<File> foldersAndMusic;
-
-        FileListsContainer(List<String> fileFolderNameList, List<Integer> fileFolderTypeList, List<File> foldersAndMusic) {
-            this.fileFolderNameList = fileFolderNameList;
-            this.fileFolderTypeList = fileFolderTypeList;
-            this.foldersAndMusic = foldersAndMusic;
-        }
-
-        public List<String> getFileFolderNameList() {
-            return fileFolderNameList;
-        }
-
-        public List<Integer> getFileFolderTypeList() {
-            return fileFolderTypeList;
-        }
-
-        public List<File> getFoldersAndMusic() {
-            return foldersAndMusic;
-        }
+        return foldersAndMusic;
     }
 }

@@ -8,14 +8,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
@@ -27,14 +28,14 @@ import java.util.List;
 
 public class FoldersFragment extends AbstractTabFragment {
 
-    private static final int LAYOUT = R.layout.listview_layout;
+    private static final int LAYOUT = R.layout.recyclerview_layout;
     private Application mApp;
-    private ListView listExplorer;
+    private RecyclerView recyclerExplorer;
 
     //Folder parameter
     private String rootDir;
     private static String currentDir;
-    private List<File> currDirList;
+    private List<File> foldersAndMusic;
 
     //HashMap to store the each folder's previous scroll/position state.
     private HashMap<String, Parcelable> mFolderStateMap;
@@ -61,8 +62,10 @@ public class FoldersFragment extends AbstractTabFragment {
         mApp = (Application) context;
         mFolderStateMap = new HashMap<>();
 
-        listExplorer = (ListView) view.findViewById(R.id.listview);
-        listExplorer.setFastScrollEnabled(true);
+        recyclerExplorer = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerExplorer.setLayoutManager(new LinearLayoutManager(context));
+
+        initRecyclerListeners();
 
 //        rootDir = Environment.getExternalStorageDirectory().getPath();
         rootDir = SongsManager.getInstance().getRootDir();
@@ -87,11 +90,25 @@ public class FoldersFragment extends AbstractTabFragment {
         return view;
     }
 
+    private void initRecyclerListeners() {
+        recyclerExplorer.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                    if (event.getAction()!=KeyEvent.ACTION_DOWN)
+                        return true;
+                    return goBack();
+                }
+                return false;
+            }
+        });
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         context = null;
-        listExplorer = null;
+        recyclerExplorer = null;
     }
 
 
@@ -120,13 +137,13 @@ public class FoldersFragment extends AbstractTabFragment {
 
             @Override
             public void onAnimationStart(Animation arg0) {
-                listExplorer.setVisibility(View.VISIBLE);
+                recyclerExplorer.setVisibility(View.VISIBLE);
 
             }
 
         });
 
-        listExplorer.setAnimation(animation);
+        recyclerExplorer.setAnimation(animation);
     }
 
 
@@ -138,31 +155,25 @@ public class FoldersFragment extends AbstractTabFragment {
      *                     null if the ListView's position should not be restored.
      */
     private void getDir(String dirPath, Parcelable restoreState) {
-        FoldersManager.FileListsContainer fileListsContainer = FoldersManager.getInstance().getFileListContainer(dirPath);
-        currDirList = fileListsContainer.getFoldersAndMusic();
+        foldersAndMusic = FoldersManager.getInstance().getFoldersAndMusic(dirPath);
 
-        FolderAdapter folderAdapter = new FolderAdapter(
-                getActivity(),
-                this,
-                fileListsContainer.getFileFolderNameList(),
-                currDirList);
+        FolderAdapter folderAdapter = new FolderAdapter(getActivity(), this, foldersAndMusic, setOnItemClickListener());
 
-        listExplorer.setAdapter(folderAdapter);
+        recyclerExplorer.setAdapter(folderAdapter);
         folderAdapter.notifyDataSetChanged();
 
         if (restoreState != null) {
-            listExplorer.onRestoreInstanceState(restoreState);
+            recyclerExplorer.getLayoutManager().onRestoreInstanceState(restoreState);
         } else if (mFolderStateMap.containsKey(dirPath)) {
-            listExplorer.onRestoreInstanceState(mFolderStateMap.get(dirPath));
+            recyclerExplorer.getLayoutManager().onRestoreInstanceState(mFolderStateMap.get(dirPath));
         }
-
-        initOnItemClickListener();
     }
 
-    private void initOnItemClickListener() {
-        listExplorer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private View.OnClickListener setOnItemClickListener() {
+        View.OnClickListener mItemClick = new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int index, long arg3) {
+            public void onClick(View v) {
+                int index = recyclerExplorer.getChildAdapterPosition(v);
                 if (index == 0 && !currentDir.equals(rootDir)) {
                     goBack();
                     return;
@@ -172,11 +183,11 @@ public class FoldersFragment extends AbstractTabFragment {
                     mFolderStateMap.clear();
                 }
 
-                mFolderStateMap.put(currentDir, listExplorer.onSaveInstanceState());
-                String newPath = currDirList.get(index).getAbsolutePath();
+                mFolderStateMap.put(currentDir, recyclerExplorer.getLayoutManager().onSaveInstanceState());
+                String newPath = foldersAndMusic.get(index).getAbsolutePath();
 
                 //Check if the selected item is a folder or a file.
-                if (currDirList.get(index).isDirectory()) {
+                if (foldersAndMusic.get(index).isDirectory()) {
                     currentDir = newPath;
                     getDir(newPath, null);
                 } else {
@@ -184,7 +195,8 @@ public class FoldersFragment extends AbstractTabFragment {
 //                    play(fileFolderTypeList.get(index), fileIndex, currentDir);
                 }
             }
-        });
+        };
+        return mItemClick;
     }
 
     public boolean goBack() {
@@ -197,7 +209,7 @@ public class FoldersFragment extends AbstractTabFragment {
 
     public void refreshListView() {
         //Update the ListView.
-        getDir(currentDir, listExplorer.onSaveInstanceState());
+        getDir(currentDir, recyclerExplorer.getLayoutManager().onSaveInstanceState());
     }
 
     @SuppressLint("SdCardPath")

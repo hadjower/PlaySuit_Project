@@ -33,4 +33,7 @@
 
     <!--Log tags-->
     <string name="path_song_info">PathSongsInfo</string>
+
+    <!--Text for recycler when no music available-->
+    <string name="no_music">No music found</string>
 </resources>

@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    public void onBackPressed() {
+//    @Override
+    public void onBacPressed() {
         switch (viewPager.getCurrentItem()) {
             case Constants.TAB_ARTIST:
                 super.onBackPressed();

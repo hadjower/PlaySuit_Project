@@ -36,15 +36,15 @@ public class AlbumsFragment extends AbstractTabFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = (RecyclerView) inflater.inflate(LAYOUT, container, false);
-        RecyclerView containerView = (RecyclerView) view;
+        view = inflater.inflate(LAYOUT, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         context = getActivity().getApplicationContext();
 
         GridLayoutManager manager = new GridLayoutManager(context, 2);
-        containerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(manager);
         try {
             AsyncLoadAllAlbumsTask asyncTask = (AsyncLoadAllAlbumsTask) ((MainActivity) getActivity()).getAsyncTask(Constants.ASYNC_ALBUMS);
-            containerView.setAdapter(new AlbumListAdapter(context, asyncTask.get(), this));
+            recyclerView.setAdapter(new AlbumListAdapter(context, asyncTask.get(), this));
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
