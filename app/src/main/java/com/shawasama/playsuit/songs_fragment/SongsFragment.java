@@ -3,11 +3,11 @@ package com.shawasama.playsuit.songs_fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
@@ -24,10 +24,10 @@ import java.util.concurrent.TimeoutException;
 
 public class SongsFragment extends AbstractTabFragment {
 
-    private static final int LAYOUT = R.layout.listview_layout;
+    private static final int LAYOUT = R.layout.recyclerview_layout;
 
     private List<Song> songList;
-    private ListView songView;
+    private RecyclerView songView;
 
     public static SongsFragment getInstance(Context context) {
         SongsFragment fragment;
@@ -43,10 +43,8 @@ public class SongsFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-
-        songView = (ListView) view.findViewById(R.id.listview);
-        initListeners();
-
+        songView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        songView.setLayoutManager(new LinearLayoutManager(context));
         connectSongList();
         return view;
     }
@@ -56,16 +54,6 @@ public class SongsFragment extends AbstractTabFragment {
         super.onDestroyView();
         context = null;
         songView = null;
-    }
-
-    private void initListeners() {
-        songView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-        });
     }
 
     public void setContext(Context context) {
@@ -80,8 +68,9 @@ public class SongsFragment extends AbstractTabFragment {
                 //TODO Write on background that there are no music
 //                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
             } else {
-                SongAdapter songAdapter = new SongAdapter(getActivity(), songList);
+                SongAdapter songAdapter = new SongAdapter(getActivity(), songList, this);
                 songView.setAdapter(songAdapter);
+                songAdapter.notifyDataSetChanged();
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

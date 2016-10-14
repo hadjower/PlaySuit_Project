@@ -97,7 +97,8 @@ public class FoldersFragment extends AbstractTabFragment {
                 if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
                     if (event.getAction()!=KeyEvent.ACTION_DOWN)
                         return true;
-                    return goBack();
+                    if (!goBack())
+                        getActivity().onBackPressed();
                 }
                 return false;
             }
