@@ -31,4 +31,8 @@ public class Album {
     public String getArtPath() {
         return artPath;
     }
+
+    public long getID() {
+        return id;
+    }
 }

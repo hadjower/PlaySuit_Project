@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shawasama.playsuit.R;
@@ -84,6 +85,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
                 title = currSong.getTitle();
                 subtitle = currSong.getArtist();
                 duration = currSong.getDuration();
+                holder.icon.setImageResource(R.mipmap.ic_music_circle);
+//                Glide.with(mFragment)
+//                        .load(AlbumsManager.getInstance().getAlbumArtPathForSong(currSong))
+//                        .centerCrop()
+//                        .into(new LinearLayoutTarget(holder.parent));
             } else {
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 retriever.setDataSource(mContext, Uri.fromFile(items.get(position)));
@@ -116,7 +122,13 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
         return items != null ? items.size(): 0;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     static class ItemViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout parent;
         TextView itemTitle;
         TextView itemSubtitle;
         ImageButton itemMenuBtn;
@@ -126,6 +138,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
         ItemViewHolder(View itemView) {
             super(itemView);
 
+            parent = (LinearLayout) itemView.findViewById(R.id.parent_folder);
             itemTitle = (TextView) itemView.findViewById(R.id.title);
             itemSubtitle = (TextView) itemView.findViewById(R.id.subtitle);
             itemRightSubtitle = (TextView) itemView.findViewById(R.id.duration);

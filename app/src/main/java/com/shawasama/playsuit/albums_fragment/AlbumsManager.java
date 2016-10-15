@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 
 import com.shawasama.playsuit.db_helper.MediaDBHelper;
 import com.shawasama.playsuit.media_class.Album;
+import com.shawasama.playsuit.media_class.Song;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,5 +66,14 @@ public class AlbumsManager {
                 return a1.getTitle().compareTo(a2.getTitle());
             }
         });
+    }
+
+    public String getAlbumArtPathForSong(Song song) {
+        long _ID = song.getAlbumID();
+        for (Album album : albums) {
+            if (album.getID() == _ID)
+                return album.getArtPath();
+        }
+        return null;
     }
 }

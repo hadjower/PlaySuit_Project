@@ -46,7 +46,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         holder.artist.setText(album.getArtist());
         String songs = String.valueOf(album.getCountSongs()) + " " + mContext.getString(R.string.songs);
         holder.countSong.setText(songs);
-        Glide.with(mContext)
+        Glide.with(mFragment)
                 .load(album.getArtPath())
                 .centerCrop()
                 .into(holder.albumArt);
