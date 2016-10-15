@@ -1,7 +1,6 @@
 package com.shawasama.playsuit.folders_fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import com.shawasama.playsuit.R;
+import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
 
@@ -29,7 +29,6 @@ import java.util.List;
 public class FoldersFragment extends AbstractTabFragment {
 
     private static final int LAYOUT = R.layout.recyclerview_layout;
-    private Application mApp;
     private RecyclerView recyclerExplorer;
 
     //Folder parameter
@@ -58,7 +57,6 @@ public class FoldersFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-        mApp = (Application) context;
         mFolderStateMap = new HashMap<>();
 
         recyclerExplorer = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -194,6 +192,7 @@ public class FoldersFragment extends AbstractTabFragment {
                 } else {
                     //TODO play
 //                    play(fileFolderTypeList.get(index), fileIndex, currentDir);
+                    ((MainActivity)getActivity()).getPanelFragment().setSongOnPanel(SongsManager.getInstance().getSong(newPath));
                 }
             }
         };

@@ -11,7 +11,7 @@ import com.shawasama.playsuit.R;
 
 public class ArtistFragment extends AbstractTabFragment {
 
-    private static final int LAYOUT = R.layout.fragment_example;
+    private static final int LAYOUT = R.layout.recyclerview_layout;
 
     public static ArtistFragment getInstance(Context context) {
         Bundle args = new Bundle();

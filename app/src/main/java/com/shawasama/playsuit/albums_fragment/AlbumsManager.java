@@ -60,6 +60,8 @@ public class AlbumsManager {
                 albumCursor.close();
             }
         }
+        if (albums == null)
+            return;
         Collections.sort(albums, new Comparator<Album>() {
             @Override
             public int compare(Album a1, Album a2) {

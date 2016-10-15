@@ -22,17 +22,20 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     private Context mContext;
     private SongsFragment mFragment;
     private RecyclerView recyclerView;
+    private View.OnClickListener mListener;
 
-    public SongAdapter(Context c, List<Song> songList, SongsFragment mFragment) {
+    public SongAdapter(Context c, List<Song> songList, SongsFragment mFragment, View.OnClickListener onClickListener) {
         this.songList = songList;
         mContext = c;
         this.mFragment = mFragment;
+        this.mListener = onClickListener;
     }
 
     @Override
     public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song, parent, false);
         recyclerView = (RecyclerView) parent;
+        itemView.setOnClickListener(mListener);
         return new SongViewHolder(itemView);
     }
 

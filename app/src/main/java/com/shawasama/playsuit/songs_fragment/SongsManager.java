@@ -166,6 +166,10 @@ public final class SongsManager {
         return songMap.get(path);
     }
 
+    public Song getFirsSong() {
+        return songList.size() > 0 ? songList.get(0) : null;
+    }
+
 
     private class PathSongInfoContainer {
         List<PathSongsInfo> infoList;

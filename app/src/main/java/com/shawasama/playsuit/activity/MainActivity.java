@@ -1,6 +1,7 @@
 package com.shawasama.playsuit.activity;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -58,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         initToolbar();
         initNavigationView();
         initTabs();
+
+        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.song_cp_fragment);
+        if (currentFragment instanceof SongControlPanelFragment)
+            panelFragment = (SongControlPanelFragment) currentFragment;
 
         //upload song list
         checkPermissionAndLoadMediaContent();
@@ -270,5 +275,9 @@ public class MainActivity extends AppCompatActivity {
 
     public AsyncTask getAsyncTask(int key) {
         return asyncTaskHashMap.get(key);
+    }
+
+    public SongControlPanelFragment getPanelFragment() {
+        return panelFragment;
     }
 }

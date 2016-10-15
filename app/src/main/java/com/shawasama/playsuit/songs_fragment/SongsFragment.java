@@ -69,7 +69,7 @@ public class SongsFragment extends AbstractTabFragment {
                 //TODO Write on background that there are no music
 //                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
             } else {
-                SongAdapter songAdapter = new SongAdapter(getActivity(), songList, this);
+                SongAdapter songAdapter = new SongAdapter(getActivity(), songList, this, setOnItemClickListener());
                 songView.setAdapter(songAdapter);
                 songAdapter.notifyDataSetChanged();
             }
@@ -78,6 +78,17 @@ public class SongsFragment extends AbstractTabFragment {
         } catch (TimeoutException e) {
             Toast.makeText(context, "Unable to load music", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private View.OnClickListener setOnItemClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = songView.getChildAdapterPosition(v);
+                ((MainActivity)getActivity()).getPanelFragment().setSongOnPanel(songList.get(index));
+            }
+        };
+        return listener;
     }
 
 }
