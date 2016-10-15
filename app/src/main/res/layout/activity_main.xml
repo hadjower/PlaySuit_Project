@@ -7,20 +7,22 @@
     android:background="@color/mainBackground"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:titleMarginTop="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+                android:titleMarginTop="4dp"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"
@@ -28,39 +30,36 @@
                 android:layout_height="wrap_content"
                 app:tabIndicatorColor="@color/colorComplementary"
                 app:tabIndicatorHeight="4dp"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@android:color/darker_gray"
                 app:tabMode="scrollable"
-                />
+                app:tabSelectedTextColor="@android:color/white"
+                app:tabTextColor="@android:color/darker_gray" />
 
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-        <include layout="@layout/song_status"/>
+        <include layout="@layout/song_status" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/menu_navigation"
-        app:headerLayout="@layout/navigation_header"
         android:background="@color/mainBackground"
-        app:itemTextColor="@drawable/navigation_view_text_style"
-        app:itemIconTint="@drawable/navigation_view_icon_style"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:headerLayout="@layout/navigation_header"
         app:itemBackground="@drawable/navigation_view_item_style"
-        />
-
+        app:itemIconTint="@drawable/navigation_view_icon_style"
+        app:itemTextColor="@drawable/navigation_view_text_style"
+        app:menu="@menu/menu_navigation"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
 </android.support.v4.widget.DrawerLayout>
