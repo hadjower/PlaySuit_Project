@@ -13,7 +13,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -22,8 +21,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
@@ -31,6 +28,7 @@ import com.shawasama.playsuit.adapter.TabsFragmentAdapter;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllAlbumsTask;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
+import com.shawasama.playsuit.song_control_panel_fragment.SongControlPanelFragment;
 import com.shawasama.playsuit.util.Constants;
 
 import java.util.HashMap;
@@ -46,9 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ViewPager viewPager;
     private NavigationView navigationView;
-
-    private ImageButton playPauseButton;
-    private boolean isPlay = false;
+    private SongControlPanelFragment panelFragment;
 
     private Map<Integer, AsyncTask> asyncTaskHashMap;
     private TabsFragmentAdapter adapter;
@@ -62,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         initToolbar();
         initNavigationView();
         initTabs();
-        initSongBar();
 
         //upload song list
         checkPermissionAndLoadMediaContent();
@@ -159,23 +154,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
         }
-    }
-
-    private void initSongBar() {
-        playPauseButton = (ImageButton) findViewById(R.id.play_pause_track);
-
-        playPauseButton.setImageDrawable(
-                ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_play_arrow_white_36dp));
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ContextCompat.getDrawable(getApplicationContext(),
-                        isPlay ? R.mipmap.ic_play_arrow_white_36dp : R.mipmap.ic_pause_white_36dp);
-                isPlay = !isPlay; // reverse
-            }
-        });
-        ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(80);
     }
 
     private void initToolbar() {

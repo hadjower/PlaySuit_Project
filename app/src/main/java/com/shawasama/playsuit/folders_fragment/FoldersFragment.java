@@ -58,7 +58,6 @@ public class FoldersFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-        context = getActivity().getApplicationContext();
         mApp = (Application) context;
         mFolderStateMap = new HashMap<>();
 

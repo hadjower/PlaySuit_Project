@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rel_control_panel_container"
     android:layout_width="match_parent"
-    android:layout_height="62dp"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:layout_gravity="bottom"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/cp_song_art"
         android:layout_width="62dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -18,43 +19,41 @@
         app:srcCompat="@mipmap/ic_album" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/cp_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="12dp"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
-        android:text="Some text..."
+        android:layout_toEndOf="@+id/cp_song_art"
+        android:layout_toRightOf="@+id/cp_song_art"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/cp_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
-        android:text="Some text..."
+        android:layout_toEndOf="@+id/cp_song_art"
+        android:layout_toRightOf="@+id/cp_song_art"
         android:textColor="@android:color/darker_gray" />
 
     <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/song_progress_bar"
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
+        android:layout_toEndOf="@+id/cp_song_art"
+        android:layout_toRightOf="@+id/cp_song_art"
         android:minHeight="0dp"
         android:progressDrawable="@drawable/progressbar_style"
         android:visibility="visible" />
 
     <ImageButton
-        android:id="@+id/next_track"
+        android:id="@+id/cp_next_track"
         android:layout_width="52dp"
         android:layout_height="58dp"
         android:background="@drawable/buttons_style"
@@ -64,22 +63,23 @@
         android:layout_alignParentEnd="true" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/cp_previous_track"
         android:layout_width="52dp"
         android:layout_height="58dp"
         android:background="@drawable/buttons_style"
         app:srcCompat="@mipmap/ic_fast_rewind_white_36dp"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/play_pause_track"
-        android:layout_toStartOf="@+id/play_pause_track" />
+        android:layout_toLeftOf="@+id/cp_play_pause_track"
+        android:layout_toStartOf="@+id/cp_play_pause_track" />
 
     <ImageButton
-        android:id="@+id/play_pause_track"
+        android:id="@+id/cp_play_pause_track"
+        app:srcCompat="@mipmap/ic_play_arrow_white_36dp"
         android:layout_width="52dp"
         android:layout_height="58dp"
         android:background="@drawable/buttons_style"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/next_track"
-        android:layout_toStartOf="@+id/next_track" />
+        android:layout_toLeftOf="@+id/cp_next_track"
+        android:layout_toStartOf="@+id/cp_next_track" />
 
 </RelativeLayout>
