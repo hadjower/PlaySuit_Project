@@ -33,6 +33,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:ems="3"
             android:paddingLeft="5dp"
             android:textColor="@color/colorComplementary"
             android:textSize="16sp" />
@@ -47,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:ems="3"
                 android:paddingLeft="5dp"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
@@ -58,6 +60,7 @@
                 android:layout_below="@+id/artist"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:ems="3"
                 android:paddingLeft="5dp"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />

@@ -59,13 +59,17 @@ public class MainActivity extends AppCompatActivity {
         initToolbar();
         initNavigationView();
         initTabs();
-
-        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.song_cp_fragment);
-        if (currentFragment instanceof SongControlPanelFragment)
-            panelFragment = (SongControlPanelFragment) currentFragment;
+        //TODO Пофиксить укорачивание текста и тест вью на панели трека
+        initSongPanel();
 
         //upload song list
         checkPermissionAndLoadMediaContent();
+    }
+
+    private void initSongPanel() {
+        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.song_cp_fragment);
+        if (currentFragment instanceof SongControlPanelFragment)
+            panelFragment = (SongControlPanelFragment) currentFragment;
     }
 
     @Override

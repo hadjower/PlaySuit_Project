@@ -20,11 +20,14 @@
 
     <TextView
         android:id="@+id/cp_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:ems="3"
         android:layout_toEndOf="@+id/cp_song_art"
         android:layout_toRightOf="@+id/cp_song_art"
         android:textColor="@android:color/white"
@@ -32,11 +35,14 @@
 
     <TextView
         android:id="@+id/cp_subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:ems="3"
         android:layout_toEndOf="@+id/cp_song_art"
         android:layout_toRightOf="@+id/cp_song_art"
         android:textColor="@android:color/darker_gray" />
