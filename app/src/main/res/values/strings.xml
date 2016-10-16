@@ -36,4 +36,9 @@
 
     <!--Text for recycler when no music available-->
     <string name="no_music">No music found</string>
+
+    <!--Content description for imagebuttons in song control panel-->
+    <string name="next_track">Next track</string>
+    <string name="previous_track">Previous track</string>
+    <string name="play_or_pause_the_track">Play or pause the track</string>
 </resources>
