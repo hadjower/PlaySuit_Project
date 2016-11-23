@@ -4,12 +4,18 @@
     android:id="@+id/manage_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackground"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/manage_background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mainBackground"
+            android:scaleType="fitXY"/>
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -33,7 +39,7 @@
 
 
             <ImageView
-                android:id="@+id/album_image"
+                android:id="@+id/manage_album_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -156,5 +162,18 @@
         </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/mainBackground"
+        app:headerLayout="@layout/navigation_header"
+        app:itemBackground="@drawable/navigation_view_item_style"
+        app:itemIconTint="@drawable/navigation_view_icon_style"
+        app:itemTextColor="@drawable/navigation_view_text_style"
+        app:menu="@menu/menu_navigation"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
 </android.support.v4.widget.DrawerLayout>

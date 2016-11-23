@@ -1,6 +1,11 @@
 package com.shawasama.playsuit.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +16,16 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.shawasama.playsuit.R;
+import com.shawasama.playsuit.util.BlurBuilder;
+import com.shawasama.playsuit.util.Constants;
 
 public class ManageSongActivity extends AppCompatActivity {
+
+    private ImageView backgroundImage;
+    private ImageView albumImage;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +34,14 @@ public class ManageSongActivity extends AppCompatActivity {
         SeekBar seekBar = (SeekBar) findViewById(R.id.manage_seekbar);
         seekBar.setProgress(80);
         initImageAlbumScale();
+        initNavigationView();
+        backgroundImage = (ImageView) findViewById(R.id.manage_background_image);
+        albumImage = (ImageView) findViewById(R.id.manage_album_image);
+
+        setBlurBackground();
+
+//        initNavigationView();
+
     }
 
     private void initImageAlbumScale() {
@@ -32,7 +53,7 @@ public class ManageSongActivity extends AppCompatActivity {
         int width = (int)((displaymetrics.widthPixels / density) - (35 * 2));
         height = width;
 
-        ImageView imageView = (ImageView) findViewById(R.id.album_image);
+        ImageView imageView = (ImageView) findViewById(R.id.manage_album_image);
         imageView.getLayoutParams().height = (int) (height * density);
         imageView.getLayoutParams().width = (int) (width * density);
 
@@ -54,6 +75,18 @@ public class ManageSongActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void setBlurBackground() {
+
+        Bitmap background = BitmapFactory.decodeResource(getResources(), R.mipmap.radioactive);
+
+        backgroundImage.setImageBitmap(BlurBuilder.fastBlur(background, 1, 25));
+
+        setAlbumImage(background);
+
+//        drawerLayout.setBackground(ob);
+
+    }
+
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.manage_toolbar);
         toolbar.setTitle("");
@@ -72,5 +105,49 @@ public class ManageSongActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.mipmap.ic_keyboard_backspace);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void initNavigationView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.manage_drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                switch (item.getItemId()) {
+                    case R.id.albumsItem:
+                        MainActivity.showTab(Constants.TAB_ALBUMS);
+                        finish();
+                        MainActivity.showTab(Constants.TAB_ALBUMS);
+                        break;
+                    case R.id.artistItem:
+                        MainActivity.showTab(Constants.TAB_ARTIST);
+                        finish();
+                        MainActivity.showTab(Constants.TAB_ARTIST);
+                        break;
+                    case R.id.foldersItem:
+                        MainActivity.showTab(Constants.TAB_FOLDERS);
+                        finish();
+                        MainActivity.showTab(Constants.TAB_FOLDERS);
+                        break;
+                    case R.id.playlistsItem:
+                        MainActivity.showTab(Constants.TAB_PLAYLISTS);
+                        finish();
+                        MainActivity.showTab(Constants.TAB_PLAYLISTS);
+                        break;
+                    case R.id.songsItem:
+                        MainActivity.showTab(Constants.TAB_SONGS);
+                        finish();
+                        MainActivity.showTab(Constants.TAB_SONGS);
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setAlbumImage(Bitmap image) {
+        albumImage.setImageBitmap(image);
     }
 }
