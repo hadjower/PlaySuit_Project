@@ -41,4 +41,5 @@
     <string name="next_track">Next track</string>
     <string name="previous_track">Previous track</string>
     <string name="play_or_pause_the_track">Play or pause the track</string>
+    <string name="now_playing">Now Playing</string>
 </resources>

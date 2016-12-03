@@ -16,6 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:onClick="openManageActivity"
         app:srcCompat="@mipmap/ic_album" />
 
     <TextView

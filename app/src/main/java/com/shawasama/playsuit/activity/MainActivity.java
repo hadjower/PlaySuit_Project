@@ -3,6 +3,7 @@ package com.shawasama.playsuit.activity;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_main;
     private DrawerLayout drawerLayout;
-    private ViewPager viewPager;
+    private static ViewPager viewPager;
     private NavigationView navigationView;
     private SongControlPanelFragment panelFragment;
 
@@ -253,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             executeLoadAsyncTasks();
     }
 
-    private void showTab(int tab_number) {
+    public static void showTab(int tab_number) {
         viewPager.setCurrentItem(tab_number);
     }
 
@@ -275,6 +277,11 @@ public class MainActivity extends AppCompatActivity {
                 navigationView.setCheckedItem(R.id.songsItem);
                 break;
         }
+    }
+
+    public void openManageActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ManageSongActivity.class);
+        startActivity(intent);
     }
 
     public AsyncTask getAsyncTask(int key) {
