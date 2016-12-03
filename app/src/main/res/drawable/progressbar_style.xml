@@ -4,6 +4,8 @@
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
+
+
                 <solid android:color="@color/colorComplementary" />
             </shape>
         </clip>
@@ -13,6 +15,8 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
+               
+
                 <solid android:color="@color/colorComplementary" />
             </shape>
         </clip>

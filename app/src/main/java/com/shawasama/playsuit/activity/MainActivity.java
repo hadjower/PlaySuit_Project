@@ -3,11 +3,8 @@ package com.shawasama.playsuit.activity;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +22,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
@@ -46,9 +42,9 @@ import static com.shawasama.playsuit.util.Constants.REQUEST_PERMISSION;
 public class MainActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_main;
-    private static DrawerLayout drawerLayout;
-    private static ViewPager viewPager;
-    private static NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private ViewPager viewPager;
+    private NavigationView navigationView;
     private SongControlPanelFragment panelFragment;
 
     private Map<Integer, AsyncTask> asyncTaskHashMap;
@@ -65,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         initTabs();
         //TODO Пофиксить укорачивание текста и тест вью на панели трека
         initSongPanel();
+
         //upload song list
         checkPermissionAndLoadMediaContent();
     }
@@ -187,10 +184,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void initNavigationView() {
+    private void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation);
+
         navigationView.setCheckedItem(R.id.albumsItem);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -254,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
             executeLoadAsyncTasks();
     }
 
-    public static void showTab(int tab_number) {
+    private void showTab(int tab_number) {
         viewPager.setCurrentItem(tab_number);
     }
 
@@ -276,11 +275,6 @@ public class MainActivity extends AppCompatActivity {
                 navigationView.setCheckedItem(R.id.songsItem);
                 break;
         }
-    }
-
-    public void openManageActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, ManageSongActivity.class);
-        startActivity(intent);
     }
 
     public AsyncTask getAsyncTask(int key) {

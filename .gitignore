@@ -5,13 +5,3 @@
 .DS_Store
 /build
 /captures
-/app/src/main/res/mipmap-hdpi/ic_music_circle.png
-/app/src/main/res/mipmap-mdpi/ic_music_circle.png
-/app/src/main/res/mipmap-xhdpi/ic_music_circle.png
-/app/src/main/res/mipmap-xxhdpi/ic_music_circle.png
-/app/src/main/res/mipmap-xxxhdpi/ic_music_circle.png
-src/main/res/mipmap-hdpi/ic_music_circle.png
-src/main/res/mipmap-mdpi/ic_music_circle.png
-src/main/res/mipmap-xhdpi/ic_music_circle.png
-src/main/res/mipmap-xxhdpi/ic_music_circle.png
-src/main/res/mipmap-xxxhdpi/ic_music_circle.png
