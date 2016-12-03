@@ -282,5 +282,4 @@ public class BlurBuilder {
         // return final image
         return bmOut;
     }
-
 }
