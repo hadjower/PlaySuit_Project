@@ -32,7 +32,7 @@ public class AlbumsManager {
         return albums;
     }
 
-    public void loadAlbums(Context context) {
+    public List<Album> loadAlbums(Context context) {
         Cursor albumCursor = MediaDBHelper.getAllAlbums(context);
         try {
 
@@ -61,13 +61,14 @@ public class AlbumsManager {
             }
         }
         if (albums == null)
-            return;
+            return null;
         Collections.sort(albums, new Comparator<Album>() {
             @Override
             public int compare(Album a1, Album a2) {
                 return a1.getTitle().compareTo(a2.getTitle());
             }
         });
+        return albums;
     }
 
     public String getAlbumArtPathForSong(Song song) {

@@ -28,6 +28,7 @@ public class SongsFragment extends AbstractTabFragment {
 
     private List<Song> songList;
     private RecyclerView songView;
+    private SongAdapter adapter;
 
     public static SongsFragment getInstance(Context context) {
         SongsFragment fragment;
@@ -69,9 +70,9 @@ public class SongsFragment extends AbstractTabFragment {
                 //TODO Write on background that there are no music
 //                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
             } else {
-                SongAdapter songAdapter = new SongAdapter(getActivity(), songList, this, setOnItemClickListener());
-                songView.setAdapter(songAdapter);
-                songAdapter.notifyDataSetChanged();
+                adapter = new SongAdapter(getActivity(), songList, this, setOnItemClickListener());
+                songView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

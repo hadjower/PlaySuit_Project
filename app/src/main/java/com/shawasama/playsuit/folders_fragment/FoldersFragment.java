@@ -38,6 +38,7 @@ public class FoldersFragment extends AbstractTabFragment {
 
     //HashMap to store the each folder's previous scroll/position state.
     private HashMap<String, Parcelable> mFolderStateMap;
+    private FolderAdapter adapter;
 
 
     public static FoldersFragment getInstance(Context context) {
@@ -156,10 +157,10 @@ public class FoldersFragment extends AbstractTabFragment {
     private void getDir(String dirPath, Parcelable restoreState) {
         foldersAndMusic = FoldersManager.getInstance().getFoldersAndMusic(dirPath);
 
-        FolderAdapter folderAdapter = new FolderAdapter(getActivity(), this, foldersAndMusic, setOnItemClickListener());
+        adapter = new FolderAdapter(getActivity(), this, foldersAndMusic, setOnItemClickListener());
 
-        recyclerExplorer.setAdapter(folderAdapter);
-        folderAdapter.notifyDataSetChanged();
+        recyclerExplorer.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
         if (restoreState != null) {
             recyclerExplorer.getLayoutManager().onRestoreInstanceState(restoreState);

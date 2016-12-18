@@ -139,7 +139,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
             super(itemView);
 
             parent = (LinearLayout) itemView.findViewById(R.id.parent_folder);
-            itemTitle = (TextView) itemView.findViewById(R.id.title);
+            itemTitle = (TextView) itemView.findViewById(R.id.aa_title);
             itemSubtitle = (TextView) itemView.findViewById(R.id.subtitle);
             itemRightSubtitle = (TextView) itemView.findViewById(R.id.duration);
             itemMenuBtn = (ImageButton) itemView.findViewById(R.id.item_btn_menu);

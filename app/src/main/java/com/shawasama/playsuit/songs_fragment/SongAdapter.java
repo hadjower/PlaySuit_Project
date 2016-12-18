@@ -63,7 +63,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         public SongViewHolder(final View itemView) {
             super(itemView);
             artist = (TextView) itemView.findViewById(R.id.subtitle);
-            title = (TextView) itemView.findViewById(R.id.title);
+            title = (TextView) itemView.findViewById(R.id.aa_title);
             duration = (TextView) itemView.findViewById(R.id.duration);
             btnMenu = (ImageButton) itemView.findViewById(R.id.item_btn_menu);
 

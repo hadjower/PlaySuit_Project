@@ -25,6 +25,7 @@ public class AlbumsFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.recyclerview_layout;
 
     private RecyclerView albumsView;
+    private AlbumAdapter adapter;
 
     public static AlbumsFragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -39,8 +40,8 @@ public class AlbumsFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-        albumsView = (RecyclerView) view.findViewById(R.id.recycler_view);
         context = getActivity().getApplicationContext();
+        albumsView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
         GridLayoutManager manager = new GridLayoutManager(context, 2);
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -50,7 +51,7 @@ public class AlbumsFragment extends AbstractTabFragment {
         albumsView.setLayoutManager(manager);
         try {
             AsyncLoadAllAlbumsTask asyncTask = (AsyncLoadAllAlbumsTask) ((MainActivity) getActivity()).getAsyncTask(Constants.ASYNC_ALBUMS);
-            AlbumListAdapter adapter = new AlbumListAdapter(context, asyncTask.get(), this);
+            adapter = new AlbumAdapter(asyncTask.get(), this);
             albumsView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         } catch (InterruptedException | ExecutionException e) {

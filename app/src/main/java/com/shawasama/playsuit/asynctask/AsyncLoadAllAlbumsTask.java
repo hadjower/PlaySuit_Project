@@ -18,8 +18,7 @@ public class AsyncLoadAllAlbumsTask extends AsyncTask<Void, Void, List<Album>> {
 
     @Override
     protected List<Album> doInBackground(Void... params) {
-        AlbumsManager.getInstance().loadAlbums(mContext);
-        return AlbumsManager.getInstance().getAlbums();
+        return AlbumsManager.getInstance().loadAlbums(mContext);
     }
 
     @Override

@@ -37,4 +37,16 @@ public class MediaDBHelper {
         };
         return musicResolver.query(musicUri, projection, null, null, null);
     }
+
+    public static Cursor getAllArtists(Context context) {
+        ContentResolver artistsResolver = context.getContentResolver();
+        Uri artistsUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Artists._ID,
+                MediaStore.Audio.Artists.ARTIST,
+                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+                MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
+        };
+        return artistsResolver.query(artistsUri, projection, null, null, null);
+    }
 }

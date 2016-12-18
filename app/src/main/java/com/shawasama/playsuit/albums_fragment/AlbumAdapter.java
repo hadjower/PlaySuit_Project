@@ -2,7 +2,6 @@ package com.shawasama.playsuit.albums_fragment;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,26 +15,23 @@ import com.shawasama.playsuit.media_class.Album;
 
 import java.util.List;
 
-public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.AlbumViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
 
     private List<Album> albums;
     private final AlbumsFragment mFragment;
-    private GridLayoutManager manager;
-    private RecyclerView viewGroup;
-    private final Context mContext;
+    private RecyclerView recyclerView;
+    private Context mContext;
 
-    public AlbumListAdapter(Context mContext, List<Album> albums, AlbumsFragment mFragment) {
-        this.mContext = mContext;
+    public AlbumAdapter(List<Album> albums, AlbumsFragment mFragment) {
         this.albums = albums;
         this.mFragment = mFragment;
     }
 
     @Override
     public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album, parent, false);
-        viewGroup = (RecyclerView) parent;
-        manager = (GridLayoutManager) viewGroup.getLayoutManager();
-
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_artist, parent, false);
+        mContext = mFragment.getActivity().getApplicationContext();
+        recyclerView = (RecyclerView) parent;
         return new AlbumViewHolder(view);
     }
 
@@ -46,8 +42,9 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         holder.artist.setText(album.getArtist());
         String songs = String.valueOf(album.getCountSongs()) + " " + mContext.getString(R.string.songs);
         holder.countSong.setText(songs);
-        Glide.with(mFragment)
+        Glide.with(mContext)
                 .load(album.getArtPath())
+                .placeholder(R.mipmap.img_album)
                 .centerCrop()
                 .into(holder.albumArt);
     }
@@ -69,11 +66,11 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Albu
         public AlbumViewHolder(View itemView) {
             super(itemView);
 
-            cardView = (CardView) itemView.findViewById(R.id.cardView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            artist = (TextView) itemView.findViewById(R.id.artist);
-            countSong = (TextView) itemView.findViewById(R.id.countSong);
-            albumArt = (ImageView) itemView.findViewById(R.id.album_art_image);
+            cardView = (CardView) itemView.findViewById(R.id.aa_cardview_container);
+            title = (TextView) itemView.findViewById(R.id.aa_title);
+            artist = (TextView) itemView.findViewById(R.id.aa_subtitle);
+            countSong = (TextView) itemView.findViewById(R.id.aa_subsubtitle);
+            albumArt = (ImageView) itemView.findViewById(R.id.aa_art_image);
         }
     }
 }

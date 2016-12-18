@@ -22,4 +22,5 @@ public class Constants {
     //Async Tasks Keys
     public static final int ASYNC_SONGS = 0;
     public static final int ASYNC_ALBUMS = 1;
+    public static final int ASYNC_ARTISTS = 2;
 }

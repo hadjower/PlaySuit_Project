@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private SongControlPanelFragment panelFragment;
 
     private Map<Integer, AsyncTask> asyncTaskHashMap;
+//    private AsyncLoadAllSongsTask asyncLoadAllSongsTask;
     private TabsFragmentAdapter adapter;
 
     @Override
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         switch (viewPager.getCurrentItem()) {
             case Constants.TAB_ALBUMS:
-//            case Constants.TAB_ARTIST:
+            case Constants.TAB_ARTIST:
                 switch (newConfig.orientation) {
                     case Configuration.ORIENTATION_LANDSCAPE:
                         ((GridLayoutManager)((AbstractTabFragment)adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(3);
