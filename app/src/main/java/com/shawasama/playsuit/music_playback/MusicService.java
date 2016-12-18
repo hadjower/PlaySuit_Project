@@ -12,6 +12,7 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.media_class.Song;
 
 import java.util.List;
@@ -31,9 +32,11 @@ public class MusicService extends Service implements
 
     private final IBinder musicBind = new MusicBinder();
     private boolean shittyFlag;
+    private MainActivity activity;
 
     private boolean isRepeat;
     private boolean isShuffle;
+    private boolean isSongChanged;
 
     public void onCreate() {
         //create the service
@@ -43,6 +46,10 @@ public class MusicService extends Service implements
         //create player
         player = new MediaPlayer();
         initMusicPlayer();
+    }
+
+    public void setActivity(MainActivity activity) {
+        this.activity = activity;
     }
 
     public void initMusicPlayer() {
@@ -117,9 +124,11 @@ public class MusicService extends Service implements
             Random rand = new Random();
             songPosn = rand.nextInt((songs.size() - 1) - 0 + 1) + 0;
             playSong();
+            activity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
         } else{
             // no repeat or shuffle ON - play next song
             playNext();
+            activity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
         }
     }
 

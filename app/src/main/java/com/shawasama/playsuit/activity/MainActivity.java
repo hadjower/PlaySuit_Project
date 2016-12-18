@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 //get service
                 musicSrv = binder.getService();
                 //pass list
+                musicSrv.setActivity(MainActivity.this);
                 musicSrv.setListAndPrepareSong(SongsManager.getInstance().getSongList());
                 musicBound = true;
             }
