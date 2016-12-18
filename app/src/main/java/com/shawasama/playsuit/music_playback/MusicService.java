@@ -15,6 +15,7 @@ import android.util.Log;
 import com.shawasama.playsuit.media_class.Song;
 
 import java.util.List;
+import java.util.Random;
 
 
 public class MusicService extends Service implements
@@ -30,6 +31,9 @@ public class MusicService extends Service implements
 
     private final IBinder musicBind = new MusicBinder();
     private boolean shittyFlag;
+
+    private boolean isRepeat;
+    private boolean isShuffle;
 
     public void onCreate() {
         //create the service
@@ -104,7 +108,19 @@ public class MusicService extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        // check for repeat is ON or OFF
+        if(isRepeat){
+            // repeat is on play same song again
+            playSong();
+        } else if(isShuffle){
+            // shuffle is on - play a random song
+            Random rand = new Random();
+            songPosn = rand.nextInt((songs.size() - 1) - 0 + 1) + 0;
+            playSong();
+        } else{
+            // no repeat or shuffle ON - play next song
+            playNext();
+        }
     }
 
     @Override

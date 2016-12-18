@@ -193,7 +193,6 @@ public class FoldersFragment extends AbstractTabFragment {
                     currentDir = newPath;
                     getDir(newPath, null);
                 } else {
-                    //TODO play
                     List<Song> songs = getSongs(foldersAndMusic);
                     int songPos = songs.indexOf(SongsManager.getInstance().getSong(foldersAndMusic.get(index).getPath()));
                     ((MainActivity)getActivity()).playSong(songs, songPos);

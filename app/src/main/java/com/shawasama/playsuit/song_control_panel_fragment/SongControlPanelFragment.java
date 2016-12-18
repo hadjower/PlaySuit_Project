@@ -91,6 +91,8 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 .into(holder.songArt);
         holder.playPause.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),
                 isPlay ? R.mipmap.ic_pause_white_36dp : R.mipmap.ic_play_arrow_white_36dp));
+        if (isPlay)
+            updateProgressBar();
     }
 
     @Override
@@ -237,7 +239,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
             nextTrack = (ImageButton) view.findViewById(R.id.cp_next_track);
             trackProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.song_progress_bar);
 
-            trackProgressBar.setProgress(20);
             setListeners(mFragment);
         }
 
@@ -252,8 +253,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                     } else {
                         id = R.mipmap.ic_pause_white_36dp;
                         mFragment.start();
-
-                        trackProgressBar.setMax(mFragment.getDuration());
                         mFragment.updateProgressBar();
 
                     }
@@ -266,8 +265,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 public void onClick(View v) {
                     mFragment.playPrev();
                     mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);
-                    trackProgressBar.setMax(mFragment.getDuration());
-                    mFragment.updateProgressBar();
                 }
             });
 
@@ -276,8 +273,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 public void onClick(View v) {
                     mFragment.playNext();
                     mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);
-                    trackProgressBar.setMax(mFragment.getDuration());
-                    mFragment.updateProgressBar();
                 }
             });
         }
