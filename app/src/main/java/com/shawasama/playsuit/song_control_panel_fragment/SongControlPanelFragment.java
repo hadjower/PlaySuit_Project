@@ -4,9 +4,11 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,9 @@ import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.albums_fragment.AlbumsManager;
 import com.shawasama.playsuit.media_class.Song;
 import com.shawasama.playsuit.music_playback.MusicController;
+import com.shawasama.playsuit.music_playback.MusicService;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
+import com.shawasama.playsuit.util.Util;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +39,7 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
     private ControlPanelViewHolder holder;
 
     private MusicController musicController;
+    private Handler mHandler;
 
     @Nullable
     @Override
@@ -49,6 +54,7 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFirstSongOnPanel();
+        mHandler = new Handler();
     }
 
     private void setFirstSongOnPanel() {
@@ -84,13 +90,42 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 .error(R.mipmap.ic_album)
                 .into(holder.songArt);
         holder.playPause.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),
-                isPlay ? R.mipmap.ic_pause_white_36dp  : R.mipmap.ic_play_arrow_white_36dp));
+                isPlay ? R.mipmap.ic_pause_white_36dp : R.mipmap.ic_play_arrow_white_36dp));
     }
 
     @Override
     public void start() {
         ((MainActivity) getActivity()).getMusicSrv().go();
+        updateProgressBar();
     }
+
+    /**
+     * Update timer on seekbar
+     * */
+    public void updateProgressBar() {
+        Log.i("MUSIC", "Entered updateSeekBar");
+        mHandler.postDelayed(mUpdateTimeTask, 100);
+    }
+
+    /**
+     * Background Runnable thread
+     * */
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            MusicService ms = ((MainActivity) getActivity()).getMusicSrv();
+            long totalDuration = ms.getDur();
+            long currentDuration = ms.getCurrentPosition();
+
+            // Updating progress bar
+            int progress = (int)(Util.getProgressPercentage(currentDuration, totalDuration));
+            holder.trackProgressBar.setProgress(0);
+            holder.trackProgressBar.setMax(100);
+            holder.trackProgressBar.setProgress(progress);
+
+            // Running this thread after 100 milliseconds
+            mHandler.postDelayed(this, 100);
+        }
+    };
 
     @Override
     public void pause() {
@@ -202,9 +237,8 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
             nextTrack = (ImageButton) view.findViewById(R.id.cp_next_track);
             trackProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.song_progress_bar);
 
+            trackProgressBar.setProgress(20);
             setListeners(mFragment);
-
-            trackProgressBar.setProgress(80);
         }
 
         private void setListeners(final SongControlPanelFragment mFragment) {
@@ -212,12 +246,16 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 @Override
                 public void onClick(View view) {
                     int id;
-                    if (mFragment.isPlaying()){
+                    if (mFragment.isPlaying()) {
                         id = R.mipmap.ic_play_arrow_white_36dp;
                         mFragment.pause();
                     } else {
                         id = R.mipmap.ic_pause_white_36dp;
                         mFragment.start();
+
+                        trackProgressBar.setMax(mFragment.getDuration());
+                        mFragment.updateProgressBar();
+
                     }
                     playPause.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplicationContext(), id));
                 }
@@ -227,7 +265,10 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 @Override
                 public void onClick(View v) {
                     mFragment.playPrev();
-                    mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);                }
+                    mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);
+                    trackProgressBar.setMax(mFragment.getDuration());
+                    mFragment.updateProgressBar();
+                }
             });
 
             nextTrack.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +276,8 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
                 public void onClick(View v) {
                     mFragment.playNext();
                     mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);
+                    trackProgressBar.setMax(mFragment.getDuration());
+                    mFragment.updateProgressBar();
                 }
             });
         }

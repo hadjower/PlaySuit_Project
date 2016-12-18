@@ -138,7 +138,7 @@ public class MusicService extends Service implements
     }
 
     public void go() {
-        if (!shittyFlag) {
+        if (!shittyFlag && !isPng()) {
             player.prepareAsync();
             shittyFlag = true;
         } else {
@@ -167,6 +167,10 @@ public class MusicService extends Service implements
 
     public void setList(List<Song> list) {
         this.songs = list;
+    }
+
+    public int getCurrentPosition() {
+        return player.getCurrentPosition();
     }
 
     public class MusicBinder extends Binder {
