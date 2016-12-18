@@ -2,6 +2,7 @@
     package="com.shawasama.playsuit">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -18,6 +19,8 @@
 
         </activity>
         <activity android:name=".activity.ManageSongActivity" />
+
+        <service android:name=".music_playback.MusicService"/>
 
     </application>
 </manifest>

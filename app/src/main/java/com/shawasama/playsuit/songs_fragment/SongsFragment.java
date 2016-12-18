@@ -86,7 +86,7 @@ public class SongsFragment extends AbstractTabFragment {
             @Override
             public void onClick(View v) {
                 int index = songView.getChildAdapterPosition(v);
-                ((MainActivity)getActivity()).getPanelFragment().setSongOnPanel(songList.get(index));
+                ((MainActivity)getActivity()).playSong(songList, index);
             }
         };
         return listener;

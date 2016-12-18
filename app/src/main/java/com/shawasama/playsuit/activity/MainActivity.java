@@ -2,13 +2,17 @@ package com.shawasama.playsuit.activity;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -21,6 +25,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,10 +36,14 @@ import com.shawasama.playsuit.adapter.TabsFragmentAdapter;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllAlbumsTask;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
+import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.music_playback.MusicService;
 import com.shawasama.playsuit.song_control_panel_fragment.SongControlPanelFragment;
+import com.shawasama.playsuit.songs_fragment.SongsManager;
 import com.shawasama.playsuit.util.Constants;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,8 +59,16 @@ public class MainActivity extends AppCompatActivity {
     private SongControlPanelFragment panelFragment;
 
     private Map<Integer, AsyncTask> asyncTaskHashMap;
-//    private AsyncLoadAllSongsTask asyncLoadAllSongsTask;
+    //    private AsyncLoadAllSongsTask asyncLoadAllSongsTask;
     private TabsFragmentAdapter adapter;
+
+    private Intent songIntent;
+    private MusicService musicSrv;
+    private Intent playIntent;
+    private boolean musicBound = false;
+
+    //connect to the service
+    private ServiceConnection musicConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +84,41 @@ public class MainActivity extends AppCompatActivity {
 
         //upload song list
         checkPermissionAndLoadMediaContent();
+
+        musicConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                Log.i("MUSIC", "Connecting service");
+                MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
+                //get service
+                musicSrv = binder.getService();
+                //pass list
+                musicSrv.setList(SongsManager.getInstance().getSongList());
+                musicBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                musicBound = false;
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("MUSIC", "Entered onStart");
+
+        if (playIntent == null) {
+            Log.i("MUSIC", "Entered isIntentNull");
+            playIntent = new Intent(getApplicationContext(), MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            getApplicationContext().startService(playIntent);
+        }
+
+        if (songIntent == null) {
+            songIntent = new Intent(MainActivity.this, ManageSongActivity.class);
+        }
     }
 
     private void initSongPanel() {
@@ -159,10 +211,10 @@ public class MainActivity extends AppCompatActivity {
             case Constants.TAB_ARTIST:
                 switch (newConfig.orientation) {
                     case Configuration.ORIENTATION_LANDSCAPE:
-                        ((GridLayoutManager)((AbstractTabFragment)adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(3);
+                        ((GridLayoutManager) ((AbstractTabFragment) adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(3);
                         break;
                     case Configuration.ORIENTATION_PORTRAIT:
-                        ((GridLayoutManager)((AbstractTabFragment)adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(2);
+                        ((GridLayoutManager) ((AbstractTabFragment) adapter.getItem(viewPager.getCurrentItem())).getRecyclerManager()).setSpanCount(2);
                         break;
                 }
         }
@@ -281,15 +333,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openManageActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, ManageSongActivity.class);
-        startActivity(intent);
+        startActivity(songIntent);
     }
 
     public AsyncTask getAsyncTask(int key) {
         return asyncTaskHashMap.get(key);
     }
 
+    public MusicService getMusicSrv() {
+        return musicSrv;
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(playIntent);
+        musicSrv = null;
+        super.onDestroy();
+    }
+
     public SongControlPanelFragment getPanelFragment() {
         return panelFragment;
+    }
+
+    public void playSong(List<Song> songs, int songPos) {
+        getPanelFragment().setSongOnPanel(songs.get(songPos));
+        musicSrv.playSong(songs, songPos);
     }
 }

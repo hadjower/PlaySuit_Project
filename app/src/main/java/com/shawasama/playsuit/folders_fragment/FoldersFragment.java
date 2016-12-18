@@ -20,9 +20,11 @@ import android.view.animation.TranslateAnimation;
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
+import com.shawasama.playsuit.media_class.Song;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -192,9 +194,21 @@ public class FoldersFragment extends AbstractTabFragment {
                     getDir(newPath, null);
                 } else {
                     //TODO play
-//                    play(fileFolderTypeList.get(index), fileIndex, currentDir);
-                    ((MainActivity)getActivity()).getPanelFragment().setSongOnPanel(SongsManager.getInstance().getSong(newPath));
+                    List<Song> songs = getSongs(foldersAndMusic);
+                    int songPos = songs.indexOf(SongsManager.getInstance().getSong(foldersAndMusic.get(index).getPath()));
+                    ((MainActivity)getActivity()).playSong(songs, songPos);
                 }
+            }
+
+            private List<Song> getSongs(List<File> foldersAndMusic) {
+                List<Song> songs = new ArrayList<>();
+                for (File file : foldersAndMusic) {
+                    if (!file.isDirectory()){
+                        Song song = SongsManager.getInstance().getSong(file.getPath());
+                        songs.add(song);
+                    }
+                }
+                return songs;
             }
         };
         return mItemClick;
