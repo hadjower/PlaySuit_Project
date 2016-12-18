@@ -37,6 +37,7 @@ import com.shawasama.playsuit.asynctask.AsyncLoadAllAlbumsTask;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
 import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.music_playback.MusicController;
 import com.shawasama.playsuit.music_playback.MusicService;
 import com.shawasama.playsuit.song_control_panel_fragment.SongControlPanelFragment;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
@@ -59,13 +60,13 @@ public class MainActivity extends AppCompatActivity {
     private SongControlPanelFragment panelFragment;
 
     private Map<Integer, AsyncTask> asyncTaskHashMap;
-    //    private AsyncLoadAllSongsTask asyncLoadAllSongsTask;
     private TabsFragmentAdapter adapter;
 
     private Intent songIntent;
     private MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound = false;
+    private MusicController controller;
 
     //connect to the service
     private ServiceConnection musicConnection;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 //get service
                 musicSrv = binder.getService();
                 //pass list
-                musicSrv.setList(SongsManager.getInstance().getSongList());
+                musicSrv.setListAndPrepareSong(SongsManager.getInstance().getSongList());
                 musicBound = true;
             }
 
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 musicBound = false;
             }
         };
+
+        setMusicController();
     }
 
     @Override
@@ -123,8 +126,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSongPanel() {
         Fragment currentFragment = getFragmentManager().findFragmentById(R.id.song_cp_fragment);
-        if (currentFragment instanceof SongControlPanelFragment)
+        if (currentFragment instanceof SongControlPanelFragment) {
             panelFragment = (SongControlPanelFragment) currentFragment;
+        }
+    }
+
+    private void setMusicController(){
+        //set the controller up
+        controller = new MusicController(this);
+        panelFragment.setController(controller);
     }
 
     @Override
@@ -356,7 +366,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void playSong(List<Song> songs, int songPos) {
-        getPanelFragment().setSongOnPanel(songs.get(songPos));
+        getPanelFragment().setSongOnPanel(songs.get(songPos), true);
         musicSrv.playSong(songs, songPos);
+    }
+
+    public boolean isMusicBound() {
+        return musicBound;
     }
 }

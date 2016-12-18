@@ -29,9 +29,9 @@ public class MusicService extends Service implements
     private int songPosn;
 
     private final IBinder musicBind = new MusicBinder();
+    private boolean shittyFlag;
 
     public void onCreate() {
-        Log.i("MUSIC", "Creating music service");
         //create the service
         super.onCreate();
         //initialize position
@@ -51,8 +51,26 @@ public class MusicService extends Service implements
         player.setOnErrorListener(this);
     }
 
-    public void setList(List<Song> theSongs) {
-        songs = theSongs;
+    public void setListAndPrepareSong(List<Song> theSongs) {
+        setList(theSongs);
+        prepareSong();
+    }
+
+    private void prepareSong() {
+        player.reset();
+        //get song
+        Song playSong = songs.get(songPosn);
+        //get id
+        long currSong = playSong.getId();
+        //set uri
+        Uri trackUri = ContentUris.withAppendedId(
+                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
+
+        try {
+            player.setDataSource(getApplicationContext(), trackUri);
+        } catch (Exception e) {
+            Log.e("MUSIC SERVICE", "Error setting data source", e);
+        }
     }
 
     @Nullable
@@ -69,30 +87,15 @@ public class MusicService extends Service implements
     }
 
     public void playSong() {
-        //play a song
-        player.reset();
-
-        //get song
-        Song playSong = songs.get(songPosn);
-        //get id
-        long currSong = playSong.getId();
-        //set uri
-        Uri trackUri = ContentUris.withAppendedId(
-                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
-
-        try {
-            player.setDataSource(getApplicationContext(), trackUri);
-        } catch (Exception e) {
-            Log.e("MUSIC SERVICE", "Error setting data source", e);
-        }
+        prepareSong();
 
         player.prepareAsync();
     }
 
-    public void playSong (List<Song> songList, int songPos) {
-        setList(songList);
+    public void playSong(List<Song> songList, int songPos) {
         setSong(songPos);
-        playSong();
+        setListAndPrepareSong(songList);
+        player.prepareAsync();
     }
 
     public void setSong(int songIndex) {
@@ -112,6 +115,58 @@ public class MusicService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+    }
+
+    public int getPosn() {
+        return player.getCurrentPosition();
+    }
+
+    public int getDur() {
+        return player.getDuration();
+    }
+
+    public boolean isPng() {
+        return player.isPlaying();
+    }
+
+    public void pausePlayer() {
+        player.pause();
+    }
+
+    public void seek(int posn) {
+        player.seekTo(posn);
+    }
+
+    public void go() {
+        if (!shittyFlag) {
+            player.prepareAsync();
+            shittyFlag = true;
+        } else {
+            player.start();
+        }
+    }
+
+    public void playPrev() {
+        songPosn--;
+        if (songPosn < 0)
+            songPosn = songs.size() - 1;
+        playSong();
+    }
+
+    //skip to next
+    public void playNext() {
+        songPosn++;
+        if (songPosn == songs.size())
+            songPosn = 0;
+        playSong();
+    }
+
+    public Song getCurrSong() {
+        return songs.get(songPosn);
+    }
+
+    public void setList(List<Song> list) {
+        this.songs = list;
     }
 
     public class MusicBinder extends Binder {

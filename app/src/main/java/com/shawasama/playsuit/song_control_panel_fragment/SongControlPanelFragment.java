@@ -12,26 +12,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.shawasama.playsuit.R;
+import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.albums_fragment.AlbumsManager;
 import com.shawasama.playsuit.media_class.Song;
+import com.shawasama.playsuit.music_playback.MusicController;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class SongControlPanelFragment extends Fragment {
+public class SongControlPanelFragment extends Fragment implements MediaController.MediaPlayerControl {
     private static final int LAYOUT = R.layout.song_control_panel;
     private Context mContext;
     private View view;
     private ControlPanelViewHolder holder;
 
-    private boolean isPlay;
+    private MusicController musicController;
 
     @Nullable
     @Override
@@ -65,7 +68,7 @@ public class SongControlPanelFragment extends Fragment {
                     super.onPostExecute(song);
                 }
             }.execute().get(1, TimeUnit.SECONDS);
-            setSongOnPanel(song);
+            setSongOnPanel(song, false);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
@@ -73,21 +76,109 @@ public class SongControlPanelFragment extends Fragment {
         }
     }
 
-    public void setSongOnPanel(Song song) {
+    public void setSongOnPanel(Song song, boolean isPlay) {
         holder.title.setText(song.getTitle());
         holder.subtitle.setText(song.getArtist());
         Glide.with(mContext)
                 .load(AlbumsManager.getInstance().getAlbumArtPathForSong(song))
                 .error(R.mipmap.ic_album)
                 .into(holder.songArt);
+        holder.playPause.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),
+                isPlay ? R.mipmap.ic_pause_white_36dp  : R.mipmap.ic_play_arrow_white_36dp));
     }
 
-    public boolean isPlay() {
-        return isPlay;
+    @Override
+    public void start() {
+        ((MainActivity) getActivity()).getMusicSrv().go();
     }
 
-    private void reverseIsPlay() {
-        isPlay = !isPlay;
+    @Override
+    public void pause() {
+        ((MainActivity) getActivity()).getMusicSrv().pausePlayer();
+    }
+
+    @Override
+    public int getDuration() {
+        if (((MainActivity) getActivity()).getMusicSrv() != null && ((MainActivity) getActivity()).isMusicBound() &&
+                ((MainActivity) getActivity()).getMusicSrv().isPng())
+            return ((MainActivity) getActivity()).getMusicSrv().getDur();
+        else
+            return 0;
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        if (((MainActivity) getActivity()).getMusicSrv() != null && ((MainActivity) getActivity()).isMusicBound() &&
+                ((MainActivity) getActivity()).getMusicSrv().isPng())
+            return ((MainActivity) getActivity()).getMusicSrv().getPosn();
+        else
+            return 0;
+    }
+
+    @Override
+    public void seekTo(int pos) {
+        ((MainActivity) getActivity()).getMusicSrv().seek(pos);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        if (((MainActivity) getActivity()).getMusicSrv() != null && ((MainActivity) getActivity()).isMusicBound())
+            return ((MainActivity) getActivity()).getMusicSrv().isPng();
+        return false;
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
+    }
+
+    public void setController(MusicController controller) {
+        this.musicController = controller;
+        musicController.setPrevNextListeners(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playNext();
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playPrev();
+            }
+        });
+
+        controller.setMediaPlayer(this);
+        controller.setAnchorView(getActivity().findViewById(R.id.recycler_view));
+        controller.setEnabled(true);
+    }
+
+    private void playPrev() {
+        ((MainActivity) getActivity()).getMusicSrv().playPrev();
+        musicController.show(0);
+    }
+
+    private void playNext() {
+        ((MainActivity) getActivity()).getMusicSrv().playNext();
+        musicController.show(0);
     }
 
     static class ControlPanelViewHolder {
@@ -111,16 +202,41 @@ public class SongControlPanelFragment extends Fragment {
             nextTrack = (ImageButton) view.findViewById(R.id.cp_next_track);
             trackProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.song_progress_bar);
 
+            setListeners(mFragment);
+
+            trackProgressBar.setProgress(80);
+        }
+
+        private void setListeners(final SongControlPanelFragment mFragment) {
             playPause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    playPause.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplicationContext(),
-                            mFragment.isPlay() ? R.mipmap.ic_play_arrow_white_36dp : R.mipmap.ic_pause_white_36dp));
-                    mFragment.reverseIsPlay(); // reverse
+                    int id;
+                    if (mFragment.isPlaying()){
+                        id = R.mipmap.ic_play_arrow_white_36dp;
+                        mFragment.pause();
+                    } else {
+                        id = R.mipmap.ic_pause_white_36dp;
+                        mFragment.start();
+                    }
+                    playPause.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplicationContext(), id));
                 }
             });
 
-            trackProgressBar.setProgress(80);
+            prevTrack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFragment.playPrev();
+                    mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);                }
+            });
+
+            nextTrack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFragment.playNext();
+                    mFragment.setSongOnPanel(((MainActivity) mFragment.getActivity()).getMusicSrv().getCurrSong(), true);
+                }
+            });
         }
 
     }
