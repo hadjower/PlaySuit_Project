@@ -15,13 +15,13 @@ import android.util.Log;
 import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.media_class.Song;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 
 public class MusicService extends Service implements
-        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     //media player
     private MediaPlayer player;
@@ -31,12 +31,10 @@ public class MusicService extends Service implements
     private int songPosn;
 
     private final IBinder musicBind = new MusicBinder();
-    private boolean shittyFlag;
     private MainActivity activity;
 
-    private boolean isRepeat;
-    private boolean isShuffle;
-    private boolean isSongChanged;
+    private boolean isRepeat = false;
+    private boolean isShuffle = false;
 
     public void onCreate() {
         //create the service
@@ -57,7 +55,6 @@ public class MusicService extends Service implements
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        player.setOnPreparedListener(this);
         player.setOnCompletionListener(this);
         player.setOnErrorListener(this);
     }
@@ -71,16 +68,23 @@ public class MusicService extends Service implements
         player.reset();
         //get song
         Song playSong = songs.get(songPosn);
+        Log.i("MUSIC", "Prepare: index[" + songPosn + "] + song[" + playSong.getTitle() + "]");
         //get id
         long currSong = playSong.getId();
         //set uri
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
+        Log.i("MUSIC", "Prepare Uri: " + trackUri);
 
         try {
             player.setDataSource(getApplicationContext(), trackUri);
         } catch (Exception e) {
             Log.e("MUSIC SERVICE", "Error setting data source", e);
+        }
+        try {
+            player.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,14 +103,14 @@ public class MusicService extends Service implements
 
     public void playSong() {
         prepareSong();
-
-        player.prepareAsync();
+        player.start();
     }
 
     public void playSong(List<Song> songList, int songPos) {
         setSong(songPos);
         setListAndPrepareSong(songList);
-        player.prepareAsync();
+        player.start();
+        Log.i("MUSIC", "Service: index[" + songPos + "] + song[" + songList.get(songPos).getTitle() + "]");
     }
 
     public void setSong(int songIndex) {
@@ -137,11 +141,6 @@ public class MusicService extends Service implements
         return false;
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.start();
-    }
-
     public int getPosn() {
         return player.getCurrentPosition();
     }
@@ -163,12 +162,7 @@ public class MusicService extends Service implements
     }
 
     public void go() {
-        if (!shittyFlag && !isPng()) {
-            player.prepareAsync();
-            shittyFlag = true;
-        } else {
-            player.start();
-        }
+        player.start();
     }
 
     public void playPrev() {

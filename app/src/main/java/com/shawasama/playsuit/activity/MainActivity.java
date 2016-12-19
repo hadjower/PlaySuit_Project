@@ -369,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
     public void playSong(List<Song> songs, int songPos) {
         getPanelFragment().setSongOnPanel(songs.get(songPos), true);
         musicSrv.playSong(songs, songPos);
+        Log.i("MUSIC", "Activity: index[" + songPos + "] + song[" + songs.get(songPos).getTitle() + "]");
     }
 
     public boolean isMusicBound() {
