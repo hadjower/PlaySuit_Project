@@ -1,6 +1,7 @@
 package com.shawasama.playsuit.songs_fragment;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,12 +24,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     private SongsFragment mFragment;
     private RecyclerView recyclerView;
     private View.OnClickListener mListener;
+    private int currSongIndex;
 
-    public SongAdapter(Context c, List<Song> songList, SongsFragment mFragment, View.OnClickListener onClickListener) {
+    public SongAdapter(Context c, List<Song> songList, SongsFragment mFragment, View.OnClickListener onClickListener, int currSongIndex) {
         this.songList = songList;
         mContext = c;
         this.mFragment = mFragment;
         this.mListener = onClickListener;
+        this.currSongIndex = currSongIndex;
     }
 
     @Override
@@ -47,6 +50,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.artist.setText(currentSong.getArtist());
         holder.title.setText(currentSong.getTitle());
         holder.duration.setText(Util.getSongDuration(currentSong.getDuration()));
+        if (position == currSongIndex)
+            holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
+                    R.color.colorComplementary));
     }
 
     @Override
@@ -75,6 +81,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
                     popupMenu.show();
                 }
             });
+        }
+
+        public void setSelected(int color) {
+            artist.setTextColor(color);
+            title.setTextColor(color);
         }
     }
 }

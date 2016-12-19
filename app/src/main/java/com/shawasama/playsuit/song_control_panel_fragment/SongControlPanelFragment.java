@@ -125,7 +125,7 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
             holder.trackProgressBar.setProgress(progress);
 
             // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 100);
+            mHandler.postDelayed(this, 1000);
         }
     };
 
@@ -190,32 +190,36 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
     }
 
     public void setController(MusicController controller) {
-        this.musicController = controller;
-        musicController.setPrevNextListeners(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playNext();
-            }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playPrev();
-            }
-        });
-
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(getActivity().findViewById(R.id.recycler_view));
-        controller.setEnabled(true);
+//        this.musicController = controller;
+//        musicController.setPrevNextListeners(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playNext();
+//            }
+//        }, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playPrev();
+//            }
+//        });
+//
+//        controller.setMediaPlayer(this);
+//        controller.setAnchorView(getActivity().findViewById(R.id.recycler_view));
+//        controller.setEnabled(true);
     }
 
     private void playPrev() {
         ((MainActivity) getActivity()).getMusicSrv().playPrev();
-        musicController.show(0);
+//        musicController.show(0);
     }
 
     private void playNext() {
         ((MainActivity) getActivity()).getMusicSrv().playNext();
-        musicController.show(0);
+//        musicController.show(0);
+    }
+
+    public void stopHandler() {
+        mHandler.removeCallbacks(mUpdateTimeTask);
     }
 
     static class ControlPanelViewHolder {

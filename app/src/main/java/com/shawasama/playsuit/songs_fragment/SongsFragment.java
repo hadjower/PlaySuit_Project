@@ -52,6 +52,11 @@ public class SongsFragment extends AbstractTabFragment {
         return view;
     }
 
+    private int getCurrSongIndex() {
+        Song currSong = ((MainActivity)getActivity()).getMusicSrv().getCurrSong();
+        return songList.indexOf(currSong);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -71,7 +76,7 @@ public class SongsFragment extends AbstractTabFragment {
                 //TODO Write on background that there are no music
 //                Toast.makeText(context, "There is no music", Toast.LENGTH_SHORT).show();
             } else {
-                adapter = new SongAdapter(getActivity(), songList, this, setOnItemClickListener());
+                adapter = new SongAdapter(getActivity(), songList, this, setOnItemClickListener(), getCurrSongIndex());
                 songView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }

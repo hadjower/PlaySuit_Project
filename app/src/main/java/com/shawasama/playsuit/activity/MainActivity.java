@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        setMusicController();
+//        setMusicController();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Log.i("MUSIC", "Entered onStart");
 
-        if (playIntent == null) {
+        if (playIntent == null && !musicBound) {
             Log.i("MUSIC", "Entered isIntentNull");
             playIntent = new Intent(getApplicationContext(), MusicService.class);
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
@@ -130,12 +130,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment instanceof SongControlPanelFragment) {
             panelFragment = (SongControlPanelFragment) currentFragment;
         }
-    }
-
-    private void setMusicController(){
-        //set the controller up
-        controller = new MusicController(this);
-        panelFragment.setController(controller);
     }
 
     @Override
@@ -358,7 +352,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         stopService(playIntent);
+        if (musicBound) {
+            unbindService(musicConnection);
+        }
         musicSrv = null;
+        panelFragment.stopHandler();
         super.onDestroy();
     }
 
