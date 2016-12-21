@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
@@ -32,16 +33,20 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
     private RecyclerView viewGroup;
     private FoldersFragment mFragment;
     private View.OnClickListener mItemClick;
+    private Song currentSong;
 
     private List<File> items;
 
-    public FolderAdapter(Context context, FoldersFragment fragment, List<File> items, View.OnClickListener mItemClick) {
+    public FolderAdapter(Context context, FoldersFragment fragment,
+                         List<File> items, View.OnClickListener mItemClick,
+                         Song currentSong) {
         mContext = context;
         mApp = (Application) context.getApplicationContext();
         mFragment = fragment;
 
         this.mItemClick = mItemClick;
         this.items = items;
+        this.currentSong = currentSong;
     }
 
     @Override
@@ -54,6 +59,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
+        holder.setIsRecyclable(false);
         //if layout for back function
         if (position == 0 && items.get(0).getPath().equals("..")) {
             holder.itemMenuBtn.setVisibility(View.INVISIBLE);
@@ -86,6 +92,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
                 subtitle = currSong.getArtist();
                 duration = currSong.getDuration();
                 holder.icon.setImageResource(R.mipmap.ic_music_circle);
+
+                if (currSong == this.currentSong) {
+                    holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
+                            R.color.colorComplementary));
+                }
 //                Glide.with(mFragment)
 //                        .load(AlbumsManager.getInstance().getAlbumArtPathForSong(currSong))
 //                        .centerCrop()
@@ -144,6 +155,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
             itemRightSubtitle = (TextView) itemView.findViewById(R.id.duration);
             itemMenuBtn = (ImageButton) itemView.findViewById(R.id.item_btn_menu);
             icon = (ImageView) itemView.findViewById(R.id.folder_icon);
+        }
+
+        public void setSelected(int color) {
+            itemSubtitle.setTextColor(color);
+            itemTitle.setTextColor(color);
         }
     }
 }

@@ -159,7 +159,7 @@ public class FoldersFragment extends AbstractTabFragment {
     private void getDir(String dirPath, Parcelable restoreState) {
         foldersAndMusic = FoldersManager.getInstance().getFoldersAndMusic(dirPath);
 
-        adapter = new FolderAdapter(getActivity(), this, foldersAndMusic, setOnItemClickListener());
+        adapter = new FolderAdapter(getActivity(), this, foldersAndMusic, setOnItemClickListener(), getCurrentSong());
 
         recyclerExplorer.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -169,6 +169,10 @@ public class FoldersFragment extends AbstractTabFragment {
         } else if (mFolderStateMap.containsKey(dirPath)) {
             recyclerExplorer.getLayoutManager().onRestoreInstanceState(mFolderStateMap.get(dirPath));
         }
+    }
+
+    private Song getCurrentSong() {
+        return ((MainActivity) getActivity()).getMusicSrv().getCurrSong();
     }
 
     private View.OnClickListener setOnItemClickListener() {
@@ -249,4 +253,6 @@ public class FoldersFragment extends AbstractTabFragment {
     public void setContext(Context context) {
         this.context = context;
     }
+
+
 }

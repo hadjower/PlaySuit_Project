@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +25,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     private SongsFragment mFragment;
     private RecyclerView recyclerView;
     private View.OnClickListener mListener;
-    private int currSongIndex;
+    private Song currSong;
 
-    public SongAdapter(Context c, List<Song> songList, SongsFragment mFragment, View.OnClickListener onClickListener, int currSongIndex) {
+    public SongAdapter(Context c, List<Song> songList,
+                       SongsFragment mFragment, View.OnClickListener onClickListener,
+                       Song currSong) {
         this.songList = songList;
         mContext = c;
         this.mFragment = mFragment;
         this.mListener = onClickListener;
-        this.currSongIndex = currSongIndex;
+        this.currSong = currSong;
     }
 
     @Override
@@ -45,15 +48,22 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     @Override
     public void onBindViewHolder(SongViewHolder holder, int position) {
         //get current song
+        holder.setIsRecyclable(false);
         Song currentSong = songList.get(position);
 
         holder.artist.setText(currentSong.getArtist());
         holder.title.setText(currentSong.getTitle());
         holder.duration.setText(Util.getSongDuration(currentSong.getDuration()));
-        if (position == currSongIndex)
+        if (this.currSong.getId() == currentSong.getId()) {
             holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
                     R.color.colorComplementary));
+            Log.i("MUSIC", "Curr: " + currSong.getTitle() + " | holder: " + currSong.getTitle());
+            Log.i("MUSIC", "Curr: " + songList.indexOf(currSong) + " | holder: " + position);
+            Log.i("MUSIC", "-------------------------------------------------");
+        }
     }
+
+
 
     @Override
     public int getItemCount() {
