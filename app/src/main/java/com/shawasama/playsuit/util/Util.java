@@ -65,4 +65,17 @@ public class Util {
         return percentage.intValue();
     }
 
+    public static String getTimeInText(long dur, int progress) {
+        long currentDur = (dur * progress) / 100;
+        return getTimeInText(currentDur);
+    }
+
+    public static int progressToTimer(int progress, int totalDuration) {
+        int currentDuration = 0;
+        totalDuration = (int) (totalDuration / 1000);
+        currentDuration = (int) ((((double)progress) / 100) * totalDuration);
+
+        // return current duration in milliseconds
+        return currentDuration * 1000;
+    }
 }

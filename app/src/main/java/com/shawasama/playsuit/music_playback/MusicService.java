@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.shawasama.playsuit.activity.MainActivity;
+import com.shawasama.playsuit.activity.ManageSongActivity;
 import com.shawasama.playsuit.media_class.Song;
 
 import java.io.IOException;
@@ -33,7 +34,8 @@ public class MusicService extends Service implements
     private int songPosn;
 
     private final IBinder musicBind = new MusicBinder();
-    private MainActivity activity;
+    private MainActivity mainActivity;
+    private ManageSongActivity manageActivity;
 
     private boolean isRepeat = false;
     private boolean isShuffle = false;
@@ -51,8 +53,8 @@ public class MusicService extends Service implements
         shuffleSongHistory = new LinkedList<>();
     }
 
-    public void setActivity(MainActivity activity) {
-        this.activity = activity;
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
     public void initMusicPlayer() {
@@ -133,11 +135,16 @@ public class MusicService extends Service implements
             songPosn = getShuffleSong();
 
             playSong();
-            activity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
+            if (mainActivity.getSharedPreferences("OURINFO", MODE_PRIVATE).getBoolean("main_active", false)) {
+                mainActivity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
+            }
+            if (mainActivity.getSharedPreferences("OURINFO", MODE_PRIVATE).getBoolean("manage_active", false)) {
+                manageActivity.setSongCharacteristics(songs.get(songPosn));
+            }
         } else {
             // no repeat or shuffle ON - play next song
             playNext();
-            activity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
+            mainActivity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
         }
     }
 

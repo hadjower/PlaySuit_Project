@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 //get service
                 musicSrv = binder.getService();
                 //pass list
-                musicSrv.setActivity(MainActivity.this);
+                musicSrv.setMainActivity(MainActivity.this);
                 musicSrv.setListAndPrepareSong(SongsManager.getInstance().getSongList());
                 musicBound = true;
             }
@@ -121,6 +122,28 @@ public class MainActivity extends AppCompatActivity {
         if (songIntent == null) {
             songIntent = new Intent(MainActivity.this, ManageSongActivity.class);
         }
+
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("main_active", true);
+        ed.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (musicBound) {
+            panelFragment.setSongOnPanel(musicSrv.getCurrSong(), musicSrv.isPng());
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("main_active", false);
+        ed.commit();
     }
 
     private void initSongPanel() {

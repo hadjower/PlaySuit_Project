@@ -5,4 +5,5 @@
    <color name="mainBackground">#424242</color>
    <color name="colorComplementary">#f58233</color>
    <color name="blackOverlay">#66000000</color>
+   <color name="button_focused">#50424242</color>
 </resources>

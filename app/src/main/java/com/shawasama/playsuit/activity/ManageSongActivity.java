@@ -1,5 +1,6 @@
 package com.shawasama.playsuit.activity;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ import com.shawasama.playsuit.util.Util;
 
 import java.lang.ref.WeakReference;
 
-public class ManageSongActivity extends AppCompatActivity {
+public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener{
     private static WeakReference<MainActivity> mainActivityRef;
 
     private ViewHolder holder;
@@ -48,18 +49,35 @@ public class ManageSongActivity extends AppCompatActivity {
         holder = new ViewHolder(this);
         musicSrv = mainActivityRef.get().getMusicSrv();
 
-        setSongCharacteristics();
+        setSongCharacteristics(musicSrv.getCurrSong());
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("manage_active", true);
+        ed.commit();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mHandler.removeCallbacks(mUpdateTimeTask);
+
+        super.onStart();
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("manage_active", false);
+        ed.commit();
     }
 
-    private void setSongCharacteristics() {
-        Song currSong = musicSrv.getCurrSong();
+    public void setSongCharacteristics(Song currSong) {
+        if (currSong == null) {
+            currSong = musicSrv.getCurrSong();
+        }
 
         holder.title.setText(currSong.getTitle());
         holder.artist.setText(currSong.getArtist());
@@ -148,6 +166,27 @@ public class ManageSongActivity extends AppCompatActivity {
         background = BlurBuilder.doBrightness(background, -15);
 //        background = BlurBuilder.doSat(background, 0);
         return background;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser)
+            holder.currTime.setText(Util.getTimeInText(musicSrv.getCurrSong().getDuration(), progress));
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        int totalDur = musicSrv.getDur();
+        int currentPos = Util.progressToTimer(seekBar.getProgress(), totalDur);
+
+        musicSrv.seek(currentPos);
+        updateProgressBar();
     }
 
     /**
@@ -253,7 +292,7 @@ public class ManageSongActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     activity.musicSrv.playPrev();
-                    activity.setSongCharacteristics();
+                    activity.setSongCharacteristics(null);
                 }
             });
 
@@ -261,7 +300,7 @@ public class ManageSongActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     activity.musicSrv.playNext();
-                    activity.setSongCharacteristics();
+                    activity.setSongCharacteristics(null);
                 }
             });
 
@@ -288,6 +327,9 @@ public class ManageSongActivity extends AppCompatActivity {
                             isRepeat ? "Repeat is OFF" : "Repeat is ON", Toast.LENGTH_SHORT).show();
                 }
             });
+
+            seekBar.setOnSeekBarChangeListener(activity);
+
         }
 
         private void initImageAlbumScale() {
