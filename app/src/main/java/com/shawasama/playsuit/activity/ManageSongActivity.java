@@ -60,6 +60,7 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("manage_active", true);
         ed.commit();
+        musicSrv.setManageActivity(this);
     }
 
     @Override

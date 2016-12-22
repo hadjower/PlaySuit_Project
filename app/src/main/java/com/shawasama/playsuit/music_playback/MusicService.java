@@ -57,6 +57,10 @@ public class MusicService extends Service implements
         this.mainActivity = mainActivity;
     }
 
+    public void setManageActivity(ManageSongActivity manageActivity) {
+        this.manageActivity = manageActivity;
+    }
+
     public void initMusicPlayer() {
         //set player properties
         player.setWakeMode(getApplicationContext(),
@@ -135,16 +139,19 @@ public class MusicService extends Service implements
             songPosn = getShuffleSong();
 
             playSong();
+        } else {
+            // no repeat or shuffle ON - play next song
+            playNext();
+//            mainActivity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
+        }
+
+        if (!isRepeat) {
             if (mainActivity.getSharedPreferences("OURINFO", MODE_PRIVATE).getBoolean("main_active", false)) {
                 mainActivity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
             }
             if (mainActivity.getSharedPreferences("OURINFO", MODE_PRIVATE).getBoolean("manage_active", false)) {
                 manageActivity.setSongCharacteristics(songs.get(songPosn));
             }
-        } else {
-            // no repeat or shuffle ON - play next song
-            playNext();
-            mainActivity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
         }
     }
 
