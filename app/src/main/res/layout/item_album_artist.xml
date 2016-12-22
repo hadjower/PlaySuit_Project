@@ -31,11 +31,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:ems="3"
             android:textColor="@color/colorComplementary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -45,6 +48,7 @@
                 android:id="@+id/aa_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:ems="3"
@@ -60,6 +64,8 @@
                 android:layout_below="@+id/aa_subtitle"
                 android:layout_toLeftOf="@+id/aa_menu_btn"
                 android:layout_toStartOf="@+id/aa_menu_btn"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:ems="3"
