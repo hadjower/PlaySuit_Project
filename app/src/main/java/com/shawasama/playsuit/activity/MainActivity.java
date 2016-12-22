@@ -26,7 +26,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent playIntent;
     private boolean musicBound = false;
 
-    //connect to the service
+    //connection to the music service
     private ServiceConnection musicConnection;
 
     @Override
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         musicConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                Log.i("MUSIC", "Connecting service");
                 MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
                 //get service
                 musicSrv = binder.getService();
@@ -103,17 +101,13 @@ public class MainActivity extends AppCompatActivity {
                 musicBound = false;
             }
         };
-
-//        setMusicController();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("MUSIC", "Entered onStart");
 
         if (playIntent == null && !musicBound) {
-            Log.i("MUSIC", "Entered isIntentNull");
             playIntent = new Intent(getApplicationContext(), MusicService.class);
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             getApplicationContext().startService(playIntent);
@@ -123,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             songIntent = new Intent(MainActivity.this, ManageSongActivity.class);
         }
 
+        //set flag that main activity is running
         SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("main_active", true);
@@ -140,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        //set flag that main activity stops running
         SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("main_active", false);
@@ -389,7 +385,6 @@ public class MainActivity extends AppCompatActivity {
     public void playSong(List<Song> songs, int songPos) {
         getPanelFragment().setSongOnPanel(songs.get(songPos), true);
         musicSrv.playSong(songs, songPos);
-        Log.i("MUSIC", "Activity: index[" + songPos + "] + song[" + songs.get(songPos).getTitle() + "]");
     }
 
     public boolean isMusicBound() {

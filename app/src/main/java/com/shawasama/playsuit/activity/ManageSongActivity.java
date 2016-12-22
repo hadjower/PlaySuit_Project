@@ -35,7 +35,7 @@ import com.shawasama.playsuit.util.Util;
 
 import java.lang.ref.WeakReference;
 
-public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener{
+public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private static WeakReference<MainActivity> mainActivityRef;
 
     private ViewHolder holder;
@@ -56,6 +56,8 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
     @Override
     protected void onStart() {
         super.onStart();
+
+        //set flag that manage activity is running
         SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("manage_active", true);
@@ -69,6 +71,7 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
         mHandler.removeCallbacks(mUpdateTimeTask);
 
         super.onStart();
+        //set flag that manage activity stops running
         SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("manage_active", false);
@@ -116,21 +119,21 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
 
     /**
      * Update timer on seekbar
-     * */
+     */
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
     /**
      * Background Runnable thread
-     * */
+     */
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             long totalDuration = musicSrv.getDur();
             long currentDuration = musicSrv.getCurrentPosition();
 
             // Updating progress bar
-            int progress = (int)(Util.getProgressPercentage(currentDuration, totalDuration));
+            int progress = (int) (Util.getProgressPercentage(currentDuration, totalDuration));
             holder.seekBar.setProgress(0);
             holder.seekBar.setMax(100);
             holder.seekBar.setProgress(progress);
@@ -192,7 +195,7 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
 
     /**
      * The ViewHolder class initializes, stores and manages ManageSong activity's child's views
-     * **/
+     **/
 
     static class ViewHolder {
         ManageSongActivity activity;
@@ -310,8 +313,10 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
                 public void onClick(View v) {
                     boolean isShuffle = activity.musicSrv.isShuffle();
                     activity.musicSrv.setShuffle(!isShuffle);
-                    shuffle.setColorFilter(!isShuffle ? Constants.COLOR_BTN_ACTIVE
-                            : Constants.COLOR_BTN_DISABLED);
+//                    shuffle.setColorFilter(!isShuffle ? Constants.COLOR_BTN_ACTIVE
+//                            : Constants.COLOR_BTN_DISABLED);
+                    shuffle.setImageDrawable(ContextCompat.getDrawable(activity.getApplicationContext(),
+                            !isShuffle ? R.mipmap.ic_shuffle_variant : R.mipmap.ic_shuffle_disabled));
                     Toast.makeText(activity.getApplicationContext(),
                             isShuffle ? "Shuffle is OFF" : "Shuffle is ON", Toast.LENGTH_SHORT).show();
                 }
@@ -322,8 +327,10 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
                 public void onClick(View v) {
                     boolean isRepeat = activity.musicSrv.isRepeat();
                     activity.musicSrv.setRepeat(!isRepeat);
-                    repeat.setColorFilter(!isRepeat ? Constants.COLOR_BTN_ACTIVE
-                            : Constants.COLOR_BTN_DISABLED);
+//                    repeat.setColorFilter(!isRepeat ? Constants.COLOR_BTN_ACTIVE
+//                            : Constants.COLOR_BTN_DISABLED);
+                    repeat.setImageDrawable(ContextCompat.getDrawable(activity.getApplicationContext(),
+                            !isRepeat ? R.mipmap.ic_repeat_once : R.mipmap.ic_repeat));
                     Toast.makeText(activity.getApplicationContext(),
                             isRepeat ? "Repeat is OFF" : "Repeat is ON", Toast.LENGTH_SHORT).show();
                 }
@@ -368,10 +375,14 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
         public void setButtons() {
             playPause.setImageDrawable(ContextCompat.getDrawable(activity.getApplicationContext(),
                     activity.musicSrv.isPng() ? R.mipmap.ic_pause_white_36dp : R.mipmap.ic_play_arrow_white_36dp));
-            shuffle.setColorFilter(activity.musicSrv.isShuffle() ? Constants.COLOR_BTN_ACTIVE
-                    : Constants.COLOR_BTN_DISABLED);
-            repeat.setColorFilter(activity.musicSrv.isRepeat() ? Constants.COLOR_BTN_ACTIVE
-                    : Constants.COLOR_BTN_DISABLED);
+//            shuffle.setColorFilter(activity.musicSrv.isShuffle() ? Constants.COLOR_BTN_ACTIVE
+//                    : Constants.COLOR_BTN_DISABLED);
+//            repeat.setColorFilter(activity.musicSrv.isRepeat() ? Constants.COLOR_BTN_ACTIVE
+//                    : Constants.COLOR_BTN_DISABLED);
+            shuffle.setImageDrawable(ContextCompat.getDrawable(activity.getApplicationContext(),
+                    activity.musicSrv.isShuffle() ? R.mipmap.ic_shuffle_variant : R.mipmap.ic_shuffle_disabled));
+            repeat.setImageDrawable(ContextCompat.getDrawable(activity.getApplicationContext(),
+                    activity.musicSrv.isRepeat() ? R.mipmap.ic_repeat_once : R.mipmap.ic_repeat));
         }
     }
 }

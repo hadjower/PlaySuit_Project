@@ -79,14 +79,11 @@ public class MusicService extends Service implements
         player.reset();
         //get song
         Song playSong = songs.get(songPosn);
-        Log.i("MUSIC", "Prepare: index[" + songPosn + "] + song[" + playSong.getTitle() + "]");
         //get id
         long currSong = playSong.getId();
         //set uri
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
-        Log.i("MUSIC", "Prepare Uri: " + trackUri);
-
         try {
             player.setDataSource(getApplicationContext(), trackUri);
         } catch (Exception e) {
@@ -121,7 +118,6 @@ public class MusicService extends Service implements
         setSong(songPos);
         setListAndPrepareSong(songList);
         player.start();
-        Log.i("MUSIC", "Service: index[" + songPos + "] + song[" + songList.get(songPos).getTitle() + "]");
     }
 
     public void setSong(int songIndex) {
@@ -142,7 +138,6 @@ public class MusicService extends Service implements
         } else {
             // no repeat or shuffle ON - play next song
             playNext();
-//            mainActivity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
         }
 
         if (!isRepeat) {

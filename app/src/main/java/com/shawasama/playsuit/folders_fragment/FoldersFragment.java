@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -203,42 +202,22 @@ public class FoldersFragment extends AbstractTabFragment {
                     List<Song> songs = getSongs(foldersAndMusic);
                     int songPos = songs.indexOf(SongsManager.getInstance().getSong(foldersAndMusic.get(index).getPath()));
 
-//                    findSelectedAndClear(songs, songPos);
-
                     findSelectedAndClear(getCurrentSong());
                     ((MainActivity) getActivity()).playSong(songs, songPos);
                     setSelected(v);
-                    //todo remove select from last track
                 }
             }
 
             private void findSelectedAndClear(Song currSong) {
                 String songPath = currSong.getPath();
-
-//                foldersAndMusic.get(i).getName().equals(songs.get(songPos).getFileName()) &&
-//                        SongsManager.getInstance().getSong(foldersAndMusic.get(i).getPath()).getId() == songs.get(songPos).getId()
                 //if we are in folder with current song
                 if (songPath.substring(0, songPath.lastIndexOf("/")).equals(currentDir)) {
-                    Log.i("MUSIC", "if we are in folder with current song");
-//                    for (int i = 0; i < foldersAndMusic.size(); i++) {
-//                        if (!foldersAndMusic.get(i).isDirectory()) {
-////                            adapter.notifyItemChanged(i + songPos);
-////                            adapter.notifyDataSetChanged();
-//                            break;
-//                        }
                         adapter.removeSelection(currSong);
-//                        Log.i("MUSIC+", "Title: " + foldersAndMusic.get(i).getName());
-//                    }
                 } else {
                     for (int i = 0; i < foldersAndMusic.size(); i++) {
-                        Log.i("MUSIC", "1.Prev song path: " + songPath);
-                        Log.i("MUSIC", "2.Current Dir: " + foldersAndMusic.get(i).getPath());
                         if (foldersAndMusic.get(i).isDirectory() &&
                                 songPath.contains(foldersAndMusic.get(i).getPath())) {
-//                            adapter.notifyItemChanged(i);
-//                            adapter.notifyDataSetChanged();
                             removeSelection(i);
-                            Log.i("MUSIC+", "Name: " + foldersAndMusic.get(i).getName());
                             break;
                         }
                     }

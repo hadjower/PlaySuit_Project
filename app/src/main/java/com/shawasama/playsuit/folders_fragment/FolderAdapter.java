@@ -100,10 +100,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
                     holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
                             R.color.colorComplementary));
                 }
-//                Glide.with(mFragment)
-//                        .load(AlbumsManager.getInstance().getAlbumArtPathForSong(currSong))
-//                        .centerCrop()
-//                        .into(new LinearLayoutTarget(holder.parent));
+
             } else {
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 retriever.setDataSource(mContext, Uri.fromFile(items.get(position)));
@@ -145,15 +142,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
         int index = getSongIndex(song);
         if (index > -1) {
             mFragment.removeSelection(index);
-//            View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_folder, viewGroup, false);
-//            itemView.setOnClickListener(mItemClick);
-//            ItemViewHolder holder = new ItemViewHolder(itemView);
-//            bindViewHolder(createViewHolder(viewGroup, 1), index);
         }
-    }
-
-    public void removeSelection (int index) {
-        bindViewHolder(createViewHolder(viewGroup, 1), index);
     }
 
     private int getSongIndex(Song song) {

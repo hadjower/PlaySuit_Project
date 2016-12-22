@@ -121,7 +121,7 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
             holder.trackProgressBar.setProgress(progress);
 
             // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 1000);
+            mHandler.postDelayed(this, 500);
         }
     };
 
@@ -187,12 +187,10 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
 
     private void playPrev() {
         ((MainActivity) getActivity()).getMusicSrv().playPrev();
-//        musicController.show(0);
     }
 
     private void playNext() {
         ((MainActivity) getActivity()).getMusicSrv().playNext();
-//        musicController.show(0);
     }
 
     public void stopHandler() {

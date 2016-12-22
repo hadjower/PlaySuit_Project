@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.media_class.Song;
 import com.shawasama.playsuit.util.Util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -58,17 +56,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         if (this.currSong.getId() == currentSong.getId()) {
             holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
                     R.color.colorComplementary));
-            Log.i("MUSIC", "Curr: " + currSong.getTitle() + " | holder: " + currSong.getTitle());
-            Log.i("MUSIC", "Curr: " + songList.indexOf(currSong) + " | holder: " + position);
-            Log.i("MUSIC", "-------------------------------------------------");
         }
-    }
-
-    public void swapArrays(List<Song> songs) {
-        List<Song> songsClone = new ArrayList<>(songs);
-        songList.clear();
-        songList.addAll(songsClone);
-        notifyDataSetChanged();
     }
 
 
