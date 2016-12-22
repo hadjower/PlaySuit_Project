@@ -23,4 +23,8 @@ public class Constants {
     public static final int ASYNC_SONGS = 0;
     public static final int ASYNC_ALBUMS = 1;
     public static final int ASYNC_ARTISTS = 2;
+
+    //Color Keys
+    public static final int COLOR_BTN_ACTIVE = 0xFFFFFFFF; //White
+    public static final int COLOR_BTN_DISABLED = 0xFF444444; //Dark Grey
 }

@@ -16,6 +16,8 @@ import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.media_class.Song;
 
 import java.io.IOException;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +37,7 @@ public class MusicService extends Service implements
 
     private boolean isRepeat = false;
     private boolean isShuffle = false;
+    private Deque<Integer> shuffleSongHistory;
 
     public void onCreate() {
         //create the service
@@ -44,6 +47,8 @@ public class MusicService extends Service implements
         //create player
         player = new MediaPlayer();
         initMusicPlayer();
+
+        shuffleSongHistory = new LinkedList<>();
     }
 
     public void setActivity(MainActivity activity) {
@@ -120,20 +125,30 @@ public class MusicService extends Service implements
     @Override
     public void onCompletion(MediaPlayer mp) {
         // check for repeat is ON or OFF
-        if(isRepeat){
+        if (isRepeat) {
             // repeat is on play same song again
             playSong();
-        } else if(isShuffle){
+        } else if (isShuffle) {
             // shuffle is on - play a random song
-            Random rand = new Random();
-            songPosn = rand.nextInt((songs.size() - 1) - 0 + 1) + 0;
+            songPosn = getShuffleSong();
+
             playSong();
             activity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
-        } else{
+        } else {
             // no repeat or shuffle ON - play next song
             playNext();
             activity.getPanelFragment().setSongOnPanel(songs.get(songPosn), true);
         }
+    }
+
+    private int getShuffleSong() {
+        Random rand = new Random();
+        int newSong = songPosn;
+        while (newSong == songPosn) {
+            newSong = rand.nextInt(songs.size());
+        }
+        shuffleSongHistory.add(songPosn);
+        return newSong;
     }
 
     @Override
@@ -166,17 +181,26 @@ public class MusicService extends Service implements
     }
 
     public void playPrev() {
-        songPosn--;
-        if (songPosn < 0)
-            songPosn = songs.size() - 1;
-        playSong();
+        if (isShuffle) {
+            if (!shuffleSongHistory.isEmpty())
+                songPosn = shuffleSongHistory.pop();
+        } else {
+            songPosn--;
+            if (songPosn < 0)
+                songPosn = songs.size() - 1;
+            playSong();
+        }
     }
 
     //skip to next
     public void playNext() {
-        songPosn++;
-        if (songPosn == songs.size())
-            songPosn = 0;
+        if (isShuffle) {
+            songPosn = getShuffleSong();
+        } else {
+            songPosn++;
+            if (songPosn == songs.size())
+                songPosn = 0;
+        }
         playSong();
     }
 
@@ -190,6 +214,28 @@ public class MusicService extends Service implements
 
     public int getCurrentPosition() {
         return player.getCurrentPosition();
+    }
+
+    public boolean isShuffle() {
+        return isShuffle;
+    }
+
+    public boolean isRepeat() {
+        return isRepeat;
+    }
+
+    public void setRepeat(boolean repeat) {
+        if (repeat)
+            setShuffle(false);
+        isRepeat = repeat;
+    }
+
+    public void setShuffle(boolean shuffle) {
+        if (shuffle)
+            setRepeat(false);
+        else
+            shuffleSongHistory.clear();
+        isShuffle = shuffle;
     }
 
     public class MusicBinder extends Binder {

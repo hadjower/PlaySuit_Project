@@ -7,7 +7,7 @@ import android.webkit.MimeTypeMap;
 import java.io.File;
 
 public class Util {
-    public static String getSongDuration(long time) {
+    public static String getTimeInText(long time) {
         StringBuilder duration = new StringBuilder("");
         long seconds = time / 1000;
         long minutes = seconds / 60;
@@ -64,4 +64,5 @@ public class Util {
         // return percentage
         return percentage.intValue();
     }
+
 }

@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.activity.MainActivity;
 import com.shawasama.playsuit.albums_fragment.AlbumsManager;
 import com.shawasama.playsuit.media_class.Song;
-import com.shawasama.playsuit.music_playback.MusicController;
 import com.shawasama.playsuit.music_playback.MusicService;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
 import com.shawasama.playsuit.util.Util;
@@ -38,7 +36,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
     private View view;
     private ControlPanelViewHolder holder;
 
-    private MusicController musicController;
     private Handler mHandler;
 
     @Nullable
@@ -105,7 +102,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
      * Update timer on seekbar
      * */
     public void updateProgressBar() {
-        Log.i("MUSIC", "Entered updateSeekBar");
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
@@ -187,25 +183,6 @@ public class SongControlPanelFragment extends Fragment implements MediaControlle
     @Override
     public int getAudioSessionId() {
         return 0;
-    }
-
-    public void setController(MusicController controller) {
-//        this.musicController = controller;
-//        musicController.setPrevNextListeners(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                playNext();
-//            }
-//        }, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                playPrev();
-//            }
-//        });
-//
-//        controller.setMediaPlayer(this);
-//        controller.setAnchorView(getActivity().findViewById(R.id.recycler_view));
-//        controller.setEnabled(true);
     }
 
     private void playPrev() {

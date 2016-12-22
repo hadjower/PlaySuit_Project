@@ -37,7 +37,6 @@ import com.shawasama.playsuit.asynctask.AsyncLoadAllAlbumsTask;
 import com.shawasama.playsuit.asynctask.AsyncLoadAllSongsTask;
 import com.shawasama.playsuit.fragment.AbstractTabFragment;
 import com.shawasama.playsuit.media_class.Song;
-import com.shawasama.playsuit.music_playback.MusicController;
 import com.shawasama.playsuit.music_playback.MusicService;
 import com.shawasama.playsuit.song_control_panel_fragment.SongControlPanelFragment;
 import com.shawasama.playsuit.songs_fragment.SongsManager;
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound = false;
-    private MusicController controller;
 
     //connect to the service
     private ServiceConnection musicConnection;
@@ -338,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openManageActivity(View view) {
+        ManageSongActivity.updateActivity(this);
         startActivity(songIntent);
     }
 

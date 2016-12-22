@@ -15,6 +15,7 @@ import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.media_class.Song;
 import com.shawasama.playsuit.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -53,7 +54,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
         holder.artist.setText(currentSong.getArtist());
         holder.title.setText(currentSong.getTitle());
-        holder.duration.setText(Util.getSongDuration(currentSong.getDuration()));
+        holder.duration.setText(Util.getTimeInText(currentSong.getDuration()));
         if (this.currSong.getId() == currentSong.getId()) {
             holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
                     R.color.colorComplementary));
@@ -61,6 +62,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             Log.i("MUSIC", "Curr: " + songList.indexOf(currSong) + " | holder: " + position);
             Log.i("MUSIC", "-------------------------------------------------");
         }
+    }
+
+    public void swapArrays(List<Song> songs) {
+        List<Song> songsClone = new ArrayList<>(songs);
+        songList.clear();
+        songList.addAll(songsClone);
+        notifyDataSetChanged();
     }
 
 

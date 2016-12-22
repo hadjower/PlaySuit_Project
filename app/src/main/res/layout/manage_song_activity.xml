@@ -47,20 +47,22 @@
                 android:background="@drawable/image_view_style"/>
 
             <TextView
+                android:id="@+id/manage_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="Artist name"
+                android:text="Song name"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
 
             <TextView
+                android:id="@+id/manage_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="2dp"
-                android:text="Song name"
+                android:text="Artist name"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="18sp" />
 
@@ -71,6 +73,7 @@
                 android:layout_marginRight="16dp">
 
                 <TextView
+                    android:id="@+id/manage_current_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="01:32"
@@ -78,6 +81,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/manage_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -102,7 +106,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/imageButton9"
+                    android:id="@+id/manage_shuffle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="7dp"
@@ -111,19 +115,19 @@
                     app:srcCompat="@mipmap/ic_shuffle_variant" />
 
                 <ImageButton
-                    android:id="@+id/imageButton5"
+                    android:id="@+id/manage_prev_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_marginBottom="7dp"
                     android:layout_marginLeft="32dp"
-                    android:layout_toEndOf="@+id/imageButton9"
-                    android:layout_toRightOf="@+id/imageButton9"
+                    android:layout_toEndOf="@+id/manage_shuffle"
+                    android:layout_toRightOf="@+id/manage_shuffle"
                     android:background="@drawable/buttons_style"
                     app:srcCompat="@mipmap/ic_fast_rewind_white_36dp" />
 
                 <ImageButton
-                    android:id="@+id/imageButton6"
+                    android:id="@+id/manage_pause_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
@@ -133,19 +137,19 @@
                     app:srcCompat="@mipmap/ic_pause_white_48dp" />
 
                 <ImageButton
-                    android:id="@+id/imageButton7"
+                    android:id="@+id/manage_next_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_marginBottom="7dp"
                     android:layout_marginRight="32dp"
-                    android:layout_toLeftOf="@+id/imageButton8"
-                    android:layout_toStartOf="@+id/imageButton8"
+                    android:layout_toLeftOf="@+id/manage_repeat_btn"
+                    android:layout_toStartOf="@+id/manage_repeat_btn"
                     android:background="@drawable/buttons_style"
                     app:srcCompat="@mipmap/ic_fast_forward_white_36dp" />
 
                 <ImageButton
-                    android:id="@+id/imageButton8"
+                    android:id="@+id/manage_repeat_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
@@ -155,12 +159,8 @@
                     android:layout_marginRight="16dp"
                     android:background="@drawable/buttons_style"
                     app:srcCompat="@mipmap/ic_repeat" />
-
-
             </RelativeLayout>
-
         </LinearLayout>
-
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView

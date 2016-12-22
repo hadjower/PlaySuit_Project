@@ -52,8 +52,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_folder, parent, false);
-        viewGroup = (RecyclerView) parent;
         itemView.setOnClickListener(mItemClick);
+        viewGroup = (RecyclerView) parent;
         return new ItemViewHolder(itemView);
     }
 
@@ -73,6 +73,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
 
         if (isFolder) {
             File folder = items.get(position);
+            if (currentSong.getPath().contains(folder.getAbsolutePath()))
+                holder.setSelected(ContextCompat.getColor(mFragment.getActivity().getApplicationContext(),
+                        R.color.colorComplementary));
 
             title = folder.getName();
             SparseArray<Long> info = SongsManager.getInstance().getFolderInfo(folder);
@@ -115,7 +118,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
         //set info about folder/song
         holder.itemTitle.setText(title);
         holder.itemSubtitle.setText(subtitle);
-        holder.itemRightSubtitle.setText(Util.getSongDuration(duration));
+        holder.itemRightSubtitle.setText(Util.getTimeInText(duration));
 
         //TODO maybe create popup class and use it for options button in all lists/grids
 //            holder.itemMenuBtn.setFocusable(true);
@@ -130,12 +133,37 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
 
     @Override
     public int getItemCount() {
-        return items != null ? items.size(): 0;
+        return items != null ? items.size() : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    public void removeSelection(Song song) {
+        int index = getSongIndex(song);
+        if (index > -1) {
+//            View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_folder, viewGroup, false);
+//            itemView.setOnClickListener(mItemClick);
+//            ItemViewHolder holder = new ItemViewHolder(itemView);
+            bindViewHolder(createViewHolder(viewGroup, 1), index);
+        }
+    }
+
+    public void removeSelection (int index) {
+        bindViewHolder(createViewHolder(viewGroup, 1), index);
+    }
+
+    private int getSongIndex(Song song) {
+        for (int i = 0; i < items.size(); i++) {
+            File item = items.get(i);
+            if (!item.isDirectory() && item.getPath().equals(song.getPath().substring(0, song.getPath().lastIndexOf("/")))) {
+                Log.i("JOWER", "Found selected song: " + item.getName());
+                return items.indexOf(item);
+            }
+        }
+        return -1;
     }
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {

@@ -2,13 +2,16 @@ package com.shawasama.playsuit.folders_fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.TextView;
 
 import com.shawasama.playsuit.R;
 import com.shawasama.playsuit.activity.MainActivity;
@@ -96,7 +100,7 @@ public class FoldersFragment extends AbstractTabFragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-                    if (event.getAction()!=KeyEvent.ACTION_DOWN)
+                    if (event.getAction() != KeyEvent.ACTION_DOWN)
                         return true;
                     if (!goBack())
                         getActivity().onBackPressed();
@@ -190,23 +194,75 @@ public class FoldersFragment extends AbstractTabFragment {
                 }
 
                 mFolderStateMap.put(currentDir, recyclerExplorer.getLayoutManager().onSaveInstanceState());
-                String newPath = foldersAndMusic.get(index).getAbsolutePath();
 
                 //Check if the selected item is a folder or a file.
                 if (foldersAndMusic.get(index).isDirectory()) {
-                    currentDir = newPath;
-                    getDir(newPath, null);
+                    currentDir = foldersAndMusic.get(index).getAbsolutePath();
+                    getDir(currentDir, null);
                 } else {
                     List<Song> songs = getSongs(foldersAndMusic);
                     int songPos = songs.indexOf(SongsManager.getInstance().getSong(foldersAndMusic.get(index).getPath()));
-                    ((MainActivity)getActivity()).playSong(songs, songPos);
+
+//                    findSelectedAndClear(songs, songPos);
+
+
+                    ((MainActivity) getActivity()).playSong(songs, songPos);
+                    setSelected(v);
+                    //todo remove select from last track
                 }
+            }
+
+            private void findSelectedAndClear(List<Song> songs, int songPos) {
+                String songPath = songs.get(songPos).getPath();
+
+//                foldersAndMusic.get(i).getName().equals(songs.get(songPos).getFileName()) &&
+//                        SongsManager.getInstance().getSong(foldersAndMusic.get(i).getPath()).getId() == songs.get(songPos).getId()
+                //if we are in folder with current song
+                if (songPath.substring(0, songPath.lastIndexOf("/")).equals(currentDir)) {
+//                    for (int i = 0; i < foldersAndMusic.size(); i++) {
+//                        if (!foldersAndMusic.get(i).isDirectory()) {
+////                            adapter.notifyItemChanged(i + songPos);
+////                            adapter.notifyDataSetChanged();
+//                            break;
+//                        }
+                        adapter.removeSelection(songs.get(songPos));
+//                        Log.i("MUSIC+", "Title: " + foldersAndMusic.get(i).getName());
+//                    }
+                } else {
+                    for (int i = 0; i < foldersAndMusic.size(); i++) {
+                        if (foldersAndMusic.get(i).isDirectory() &&
+                                songs.get(songPos).getPath().contains(foldersAndMusic.get(i).getAbsolutePath())) {
+//                            adapter.notifyItemChanged(i);
+//                            adapter.notifyDataSetChanged();
+                            adapter.removeSelection(i);
+                            Log.i("MUSIC+", "Name: " + foldersAndMusic.get(i).getName());
+                            break;
+                        }
+                    }
+                }
+            }
+
+            private void removeSelection(int pos) {
+                View view = manager.findViewByPosition(pos);
+                TextView title = (TextView) view.findViewById(R.id.aa_title);
+                TextView subtitle = (TextView) view.findViewById(R.id.subtitle);
+                title.setTextColor(Color.WHITE);
+                subtitle.setTextColor(Color.DKGRAY);
+            }
+
+            private void setSelected(View v) {
+                TextView title = (TextView) v.findViewById(R.id.aa_title);
+                TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
+                int color = ContextCompat.getColor(getActivity().getApplicationContext(),
+                        R.color.colorComplementary);
+                title.setTextColor(color);
+                subtitle.setTextColor(color);
             }
 
             private List<Song> getSongs(List<File> foldersAndMusic) {
                 List<Song> songs = new ArrayList<>();
                 for (File file : foldersAndMusic) {
-                    if (!file.isDirectory()){
+                    if (!file.isDirectory()) {
                         Song song = SongsManager.getInstance().getSong(file.getPath());
                         songs.add(song);
                     }
