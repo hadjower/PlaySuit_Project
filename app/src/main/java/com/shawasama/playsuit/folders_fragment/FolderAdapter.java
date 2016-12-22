@@ -144,10 +144,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
     public void removeSelection(Song song) {
         int index = getSongIndex(song);
         if (index > -1) {
+            mFragment.removeSelection(index);
 //            View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_folder, viewGroup, false);
 //            itemView.setOnClickListener(mItemClick);
 //            ItemViewHolder holder = new ItemViewHolder(itemView);
-            bindViewHolder(createViewHolder(viewGroup, 1), index);
+//            bindViewHolder(createViewHolder(viewGroup, 1), index);
         }
     }
 
@@ -158,7 +159,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ItemViewHo
     private int getSongIndex(Song song) {
         for (int i = 0; i < items.size(); i++) {
             File item = items.get(i);
-            if (!item.isDirectory() && item.getPath().equals(song.getPath().substring(0, song.getPath().lastIndexOf("/")))) {
+            if (!item.isDirectory() && item.getPath().equals(song.getPath())) {
                 Log.i("JOWER", "Found selected song: " + item.getName());
                 return items.indexOf(item);
             }

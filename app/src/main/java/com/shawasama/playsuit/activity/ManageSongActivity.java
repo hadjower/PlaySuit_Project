@@ -372,8 +372,6 @@ public class ManageSongActivity extends AppCompatActivity implements SeekBar.OnS
                     : Constants.COLOR_BTN_DISABLED);
             repeat.setColorFilter(activity.musicSrv.isRepeat() ? Constants.COLOR_BTN_ACTIVE
                     : Constants.COLOR_BTN_DISABLED);
-            //todo onresume mainactivity сменить трек внизу
-            //todo oncompletition смена трека тут
         }
     }
 }

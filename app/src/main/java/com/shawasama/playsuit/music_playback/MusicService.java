@@ -252,6 +252,10 @@ public class MusicService extends Service implements
         isShuffle = shuffle;
     }
 
+    public int getSongPosn() {
+        return songPosn;
+    }
+
     public class MusicBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;

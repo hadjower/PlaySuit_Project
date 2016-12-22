@@ -1,14 +1,16 @@
 package com.shawasama.playsuit.songs_fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shawasama.playsuit.R;
@@ -53,7 +55,7 @@ public class SongsFragment extends AbstractTabFragment {
     }
 
     private Song getCurrSong() {
-        return ((MainActivity)getActivity()).getMusicSrv().getCurrSong();
+        return ((MainActivity) getActivity()).getMusicSrv().getCurrSong();
     }
 
     @Override
@@ -91,11 +93,29 @@ public class SongsFragment extends AbstractTabFragment {
             @Override
             public void onClick(View v) {
                 int index = songView.getChildAdapterPosition(v);
-                ((MainActivity)getActivity()).playSong(songList, index);
-                Log.i("MUSIC", "Fragment: index[" + index + "] + song[" + songList.get(index).getTitle() + "]");
+                removeSelection(((MainActivity) getActivity()).getMusicSrv().getSongPosn());
+                ((MainActivity) getActivity()).playSong(songList, index);
+                setSelected(v);
             }
         };
         return listener;
+    }
+
+    private void removeSelection(int pos) {
+        View view = manager.findViewByPosition(pos);
+        TextView title = (TextView) view.findViewById(R.id.aa_title);
+        TextView subtitle = (TextView) view.findViewById(R.id.subtitle);
+        title.setTextColor(Color.WHITE);
+        subtitle.setTextColor(ContextCompat.getColor(getContext(), android.R.color.darker_gray));
+    }
+
+    private void setSelected(View v) {
+        TextView title = (TextView) v.findViewById(R.id.aa_title);
+        TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
+        int color = ContextCompat.getColor(getActivity().getApplicationContext(),
+                R.color.colorComplementary);
+        title.setTextColor(color);
+        subtitle.setTextColor(color);
     }
 
 }

@@ -205,49 +205,44 @@ public class FoldersFragment extends AbstractTabFragment {
 
 //                    findSelectedAndClear(songs, songPos);
 
-
+                    findSelectedAndClear(getCurrentSong());
                     ((MainActivity) getActivity()).playSong(songs, songPos);
                     setSelected(v);
                     //todo remove select from last track
                 }
             }
 
-            private void findSelectedAndClear(List<Song> songs, int songPos) {
-                String songPath = songs.get(songPos).getPath();
+            private void findSelectedAndClear(Song currSong) {
+                String songPath = currSong.getPath();
 
 //                foldersAndMusic.get(i).getName().equals(songs.get(songPos).getFileName()) &&
 //                        SongsManager.getInstance().getSong(foldersAndMusic.get(i).getPath()).getId() == songs.get(songPos).getId()
                 //if we are in folder with current song
                 if (songPath.substring(0, songPath.lastIndexOf("/")).equals(currentDir)) {
+                    Log.i("MUSIC", "if we are in folder with current song");
 //                    for (int i = 0; i < foldersAndMusic.size(); i++) {
 //                        if (!foldersAndMusic.get(i).isDirectory()) {
 ////                            adapter.notifyItemChanged(i + songPos);
 ////                            adapter.notifyDataSetChanged();
 //                            break;
 //                        }
-                        adapter.removeSelection(songs.get(songPos));
+                        adapter.removeSelection(currSong);
 //                        Log.i("MUSIC+", "Title: " + foldersAndMusic.get(i).getName());
 //                    }
                 } else {
                     for (int i = 0; i < foldersAndMusic.size(); i++) {
+                        Log.i("MUSIC", "1.Prev song path: " + songPath);
+                        Log.i("MUSIC", "2.Current Dir: " + foldersAndMusic.get(i).getPath());
                         if (foldersAndMusic.get(i).isDirectory() &&
-                                songs.get(songPos).getPath().contains(foldersAndMusic.get(i).getAbsolutePath())) {
+                                songPath.contains(foldersAndMusic.get(i).getPath())) {
 //                            adapter.notifyItemChanged(i);
 //                            adapter.notifyDataSetChanged();
-                            adapter.removeSelection(i);
+                            removeSelection(i);
                             Log.i("MUSIC+", "Name: " + foldersAndMusic.get(i).getName());
                             break;
                         }
                     }
                 }
-            }
-
-            private void removeSelection(int pos) {
-                View view = manager.findViewByPosition(pos);
-                TextView title = (TextView) view.findViewById(R.id.aa_title);
-                TextView subtitle = (TextView) view.findViewById(R.id.subtitle);
-                title.setTextColor(Color.WHITE);
-                subtitle.setTextColor(Color.DKGRAY);
             }
 
             private void setSelected(View v) {
@@ -311,4 +306,11 @@ public class FoldersFragment extends AbstractTabFragment {
     }
 
 
+    public void removeSelection(int pos) {
+        View view = manager.findViewByPosition(pos);
+        TextView title = (TextView) view.findViewById(R.id.aa_title);
+        TextView subtitle = (TextView) view.findViewById(R.id.subtitle);
+        title.setTextColor(Color.WHITE);
+        subtitle.setTextColor(ContextCompat.getColor(getContext(), android.R.color.darker_gray));
+    }
 }
