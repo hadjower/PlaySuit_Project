@@ -103,6 +103,8 @@ public class SongsFragment extends AbstractTabFragment {
 
     private void removeSelection(int pos) {
         View view = manager.findViewByPosition(pos);
+        if (view == null)
+            return;
         TextView title = (TextView) view.findViewById(R.id.aa_title);
         TextView subtitle = (TextView) view.findViewById(R.id.subtitle);
         title.setTextColor(Color.WHITE);
